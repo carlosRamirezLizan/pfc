@@ -1,17 +1,51 @@
 apply plugin: 'com.android.application'
-
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
-        // min and target SDK is not set in Gradle to use the version defined in the android manifest
+        applicationId ""
+        minSdkVersion 11
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+        testApplicationId 'com.radmas.iyc.test'
+        testFunctionalTest true
+        testInstrumentationRunner getInstrumentationTestRunner();
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('.jks')
+            storePassword "1batery1"
+            keyAlias "pfc"
+            keyPassword "1batery1"
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            debuggable false
+            signingConfig signingConfigs.release
+            zipAlignEnabled true
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources true
+            debuggable true
+            zipAlignEnabled false
+        }
+    }
+
+    productFlavors {
+        canary {
+            applicationId 'com.radmas.iycp.canary'
+        }
+        demo {
+            applicationId 'com.radmas.iycp.demo'
         }
     }
 }
@@ -22,8 +56,31 @@ repositories {
     }
 }
 
+def getInstrumentationTestRunner() {
+
+    def result = "android.test.InstrumentationTestRunner";
+
+    if (project.hasProperty("testSize")) {
+
+        switch (project.getProperties().get("testSize")) {
+
+            case "small":
+                result = "com.radmas.iyc.test.runner.SmallTestsInstrumentationTestRunner";
+                break;
+
+            case "medium":
+                result = "com.radmas.iyc.test.runner.MediumTestInstrumentationTestRunner";
+                break
+        }
+    }
+
+    logger.lifecycle("Using TestRunner: " + result)
+
+    return result
+}
+
 dependencies {
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile (group: 'org.eclipse.paho', name: 'org.eclipse.paho.android.service', version: '1.0.2') {
         exclude module: 'support-v4'
     }
