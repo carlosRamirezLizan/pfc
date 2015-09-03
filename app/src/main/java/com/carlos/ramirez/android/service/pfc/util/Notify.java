@@ -10,7 +10,7 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.util;
+package com.carlos.ramirez.android.service.pfc.util;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -20,7 +20,9 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.widget.Toast;
 
-import org.eclipse.paho.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+
 
 import java.util.Calendar;
 

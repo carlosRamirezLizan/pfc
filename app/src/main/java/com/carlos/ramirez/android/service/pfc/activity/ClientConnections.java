@@ -10,7 +10,7 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.activity;
+package com.carlos.ramirez.android.service.pfc.activity;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -30,16 +30,16 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.callback.MqttCallbackHandler;
+import com.carlos.ramirez.android.service.pfc.callback.MqttTraceCallback;
+import com.carlos.ramirez.android.service.pfc.listener.ActionListener;
+import com.carlos.ramirez.android.service.pfc.listener.Listener;
+import com.carlos.ramirez.android.service.pfc.model.Connection;
+import com.carlos.ramirez.android.service.pfc.model.Connections;
+import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.android.service.pfc.listener.ActionListener;
-import org.eclipse.paho.android.service.pfc.util.ActivityConstants;
-import org.eclipse.paho.android.service.pfc.model.Connection;
-import org.eclipse.paho.android.service.pfc.model.Connection.ConnectionStatus;
-import org.eclipse.paho.android.service.pfc.model.Connections;
-import org.eclipse.paho.android.service.pfc.listener.Listener;
-import org.eclipse.paho.android.service.pfc.callback.MqttCallbackHandler;
-import org.eclipse.paho.android.service.pfc.callback.MqttTraceCallback;
-import org.eclipse.paho.android.service.pfc.R;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
@@ -305,7 +305,7 @@ public class ClientConnections extends ListActivity {
 
     String[] actionArgs = new String[1];
     actionArgs[0] = clientId;
-    connection.changeConnectionStatus(ConnectionStatus.CONNECTING);
+    connection.changeConnectionStatus(Connection.ConnectionStatus.CONNECTING);
 
     conOpt.setCleanSession(cleanSession);
     conOpt.setConnectionTimeout(timeout);

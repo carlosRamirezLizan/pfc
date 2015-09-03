@@ -10,7 +10,7 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.fragment;
+package com.carlos.ramirez.android.service.pfc.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,7 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.eclipse.paho.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.R;
+
 
 /**
  * Fragment for the publish message pane.

@@ -9,26 +9,32 @@ US Government Users Restricted Rights - Use, duplication or
 disclosure restricted by GSA ADP Schedule Contract with
 IBM Corp.
 -->
+<ScrollView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_margin="10dp"
+    android:layout_height="wrap_content" >
 
     <LinearLayout
         android:id="@+id/usernameGroup"
         android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
         android:layout_height="wrap_content" >
 
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/uname" 
-            android:layout_marginRight="15dip"/>
+            android:text="@string/uname"/>
 
         <EditText
             android:id="@+id/uname"
-                        android:layout_width="0dip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:layout_weight="0.22"
@@ -40,8 +46,9 @@ IBM Corp.
 
     <LinearLayout
         android:id="@+id/passwordGroup"
-                    android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_below="@id/usernameGroup"
         android:layout_marginTop="25dp" >
 
@@ -49,12 +56,11 @@ IBM Corp.
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pass"
-            android:layout_marginRight="25dip" />
+            android:text="@string/pass" />
 
         <EditText
             android:id="@+id/password"
-            android:layout_width="0dip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:layout_weight="0.22"
@@ -67,20 +73,34 @@ IBM Corp.
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/passwordGroup"
+        android:orientation="vertical"
         android:layout_marginTop="25dp" >
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ssl"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="60dip" />
 
-        <CheckBox
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/sslCheckBox"
-                        android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/empty" />
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/sslKeyLocaltion"
@@ -101,13 +121,14 @@ IBM Corp.
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/select" />
-
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/timeoutGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_below="@id/sslGroup"
         android:layout_marginTop="25dp" >
 
@@ -115,15 +136,13 @@ IBM Corp.
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/timeout"
-            android:layout_marginRight="35dip" />
+            android:text="@string/timeout"/>
 
         <EditText
             android:id="@+id/timeout"
-                        android:layout_width="0dip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:layout_weight="0.22"
             android:hint="@string/timeoutHint"
             android:inputType="number" />
     </LinearLayout>
@@ -132,6 +151,7 @@ IBM Corp.
         android:id="@+id/keepaliveGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_below="@id/timeoutGroup"
         android:layout_marginTop="25dp" >
 
@@ -139,18 +159,16 @@ IBM Corp.
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/keepalive" 
-            android:singleLine="false"
-            android:layout_marginRight="25dip"/>
+            android:text="@string/keepalive" />
 
         <EditText
             android:id="@+id/keepalive"
-            android:layout_width="0dip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:layout_weight="0.22"
             android:hint="@string/keepaliveHint"
             android:inputType="number" />
     </LinearLayout>
 
 </RelativeLayout>
+</ScrollView>

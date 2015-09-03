@@ -10,7 +10,7 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.fragment;
+package com.carlos.ramirez.android.service.pfc.fragment;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
@@ -22,10 +22,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
-import org.eclipse.paho.android.service.pfc.model.Connection;
-import org.eclipse.paho.android.service.pfc.model.Connections;
-import org.eclipse.paho.android.service.pfc.listener.Listener;
-import org.eclipse.paho.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.listener.Listener;
+import com.carlos.ramirez.android.service.pfc.model.Connection;
+import com.carlos.ramirez.android.service.pfc.model.Connections;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

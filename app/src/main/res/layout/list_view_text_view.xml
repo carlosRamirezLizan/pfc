@@ -10,10 +10,24 @@ US Government Users Restricted Rights - Use, duplication or
 disclosure restricted by GSA ADP Schedule Contract with
 IBM Corp.
  -->
-<TextView
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="272dp"
-    android:layout_height="fill_parent"
-    android:focusable="false"
-    android:padding="10dp"
-/>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:padding="5dp"
+    card_view:cardCornerRadius="4dp"
+    android:background="@color/main_white">
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="272dp"
+        android:layout_height="fill_parent"
+        android:focusable="false"
+        tools:text="Prueba de texto para visualización"
+        android:padding="10dp"/>
+</android.support.v7.widget.CardView>
+

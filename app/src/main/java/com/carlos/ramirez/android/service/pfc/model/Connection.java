@@ -10,15 +10,16 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.model;
+package com.carlos.ramirez.android.service.pfc.model;
 
 import android.content.Context;
 import android.text.Html;
 import android.text.Spanned;
 
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.android.service.pfc.util.ActivityConstants;
-import org.eclipse.paho.android.service.pfc.R;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
 import java.beans.PropertyChangeEvent;

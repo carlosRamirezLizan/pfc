@@ -10,16 +10,17 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.fragment;
+package com.carlos.ramirez.android.service.pfc.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Spanned;
 import android.widget.ArrayAdapter;
 
-import org.eclipse.paho.android.service.pfc.model.Connection;
-import org.eclipse.paho.android.service.pfc.model.Connections;
-import org.eclipse.paho.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.model.Connection;
+import com.carlos.ramirez.android.service.pfc.model.Connections;
+
 
 /**
  * This fragment displays the history information for a client

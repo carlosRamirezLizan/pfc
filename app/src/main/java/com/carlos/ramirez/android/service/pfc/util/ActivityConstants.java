@@ -10,7 +10,7 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.util;
+package com.carlos.ramirez.android.service.pfc.util;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 

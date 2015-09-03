@@ -10,11 +10,12 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.activity;
+package com.carlos.ramirez.android.service.pfc.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -22,8 +23,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
-import org.eclipse.paho.android.service.pfc.util.ActivityConstants;
-import org.eclipse.paho.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+
 
 /**
  * Activity for setting the last will message for the client
@@ -81,7 +83,7 @@ public class LastWill extends Activity {
             break;
         }
 
-        boolean retained = ((CheckBox) findViewById(R.id.retained)).isChecked();
+        boolean retained = ((SwitchCompat) findViewById(R.id.retained)).isChecked();
 
         //package the data collected into the intent
         result.putExtra(ActivityConstants.message, message);

@@ -10,16 +10,16 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.callback;
+package com.carlos.ramirez.android.service.pfc.callback;
 
 import android.content.Context;
 import android.content.Intent;
 
-import org.eclipse.paho.android.service.pfc.model.Connection;
-import org.eclipse.paho.android.service.pfc.model.Connection.ConnectionStatus;
-import org.eclipse.paho.android.service.pfc.model.Connections;
-import org.eclipse.paho.android.service.pfc.util.Notify;
-import org.eclipse.paho.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.model.Connection;
+import com.carlos.ramirez.android.service.pfc.model.Connections;
+import com.carlos.ramirez.android.service.pfc.util.Notify;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -55,7 +55,7 @@ public class MqttCallbackHandler implements MqttCallback {
     if (cause != null) {
       Connection c = Connections.getInstance(context).getConnection(clientHandle);
       c.addAction("Connection Lost");
-      c.changeConnectionStatus(ConnectionStatus.DISCONNECTED);
+      c.changeConnectionStatus(Connection.ConnectionStatus.DISCONNECTED);
 
       //format string to use a notification text
       Object[] args = new Object[2];
@@ -84,26 +84,16 @@ public class MqttCallbackHandler implements MqttCallback {
     Connection c = Connections.getInstance(context).getConnection(clientHandle);
 
     //create arguments to format message arrived notifcation string
-    String[] args = new String[2];
-    args[0] = new String(message.getPayload());
-    args[1] = topic+";qos:"+message.getQos()+";retained:"+message.isRetained();
-
     //get the string from strings.xml and format
-    String messageString = context.getString(R.string.messageRecieved, (Object[]) args);
+    String messageString = context.getString(R.string.messageRecieved, new String(message.getPayload()), topic+";qos:"+message.getQos()+";retained:"+message.isRetained());
 
     //create intent to start activity
     Intent intent = new Intent();
     intent.setClassName(context, "org.eclipse.paho.android.service.sample.fragment.ConnectionDetails");
     intent.putExtra("handle", clientHandle);
 
-    //format string args
-    Object[] notifyArgs = new String[3];
-    notifyArgs[0] = c.getId();
-    notifyArgs[1] = new String(message.getPayload());
-    notifyArgs[2] = topic;
-
     //notify the user 
-    Notify.notifcation(context, context.getString(R.string.notification, notifyArgs), intent, R.string.notifyTitle);
+    Notify.notifcation(context, context.getString(R.string.notification, c.getId(), new String(message.getPayload()), topic), intent, R.string.notifyTitle);
 
     //update client history
     c.addAction(messageString);

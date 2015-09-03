@@ -12,10 +12,12 @@ IBM Corp.
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+                android:layout_margin="10dp"
     android:layout_height="match_parent" >
 
     <LinearLayout
         android:id="@+id/clientIdGroup"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
@@ -28,9 +30,8 @@ IBM Corp.
 
         <EditText
             android:id="@+id/clientId"
-            android:layout_width="0dip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.22"
             android:ems="10"
             android:inputType="text" />
     </LinearLayout>
@@ -40,6 +41,7 @@ IBM Corp.
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
+        android:orientation="vertical"
         android:layout_below="@id/clientIdGroup" >
 
         <TextView
@@ -51,9 +53,8 @@ IBM Corp.
 
         <AutoCompleteTextView
             android:id="@+id/serverURI"
-            android:layout_width="0dip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.22"
             android:ems="10"
             android:hint="@string/serverURIHint"
             android:inputType="text" />
@@ -64,6 +65,7 @@ IBM Corp.
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
+        android:orientation="vertical"
         android:layout_below="@id/serverGroup" >
 
         <TextView
@@ -75,9 +77,8 @@ IBM Corp.
 
         <EditText
             android:id="@+id/port"
-            android:layout_width="0dip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.22"
             android:ems="10"
             android:hint="@string/portHint"
             android:inputType="number" />
@@ -97,12 +98,14 @@ IBM Corp.
             android:layout_marginRight="35dip"
             android:text="@string/cleanSession" />
 
-        <CheckBox
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/cleanSessionCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/contentDescriptionCleanSession"
-            android:text="@string/empty" />
+            android:checked="false"
+            android:focusable="false"
+            android:clickable="false"
+            android:contentDescription="@string/contentDescriptionCleanSession" />
     </LinearLayout>
 
 </RelativeLayout>

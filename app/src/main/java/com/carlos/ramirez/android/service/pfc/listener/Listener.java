@@ -10,7 +10,7 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.listener;
+package com.carlos.ramirez.android.service.pfc.listener;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,15 +21,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.activity.ClientConnections;
+import com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails;
+import com.carlos.ramirez.android.service.pfc.model.Connection;
+import com.carlos.ramirez.android.service.pfc.model.Connections;
+import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.android.service.pfc.listener.ActionListener.Action;
-import org.eclipse.paho.android.service.pfc.util.ActivityConstants;
-import org.eclipse.paho.android.service.pfc.model.Connection;
-import org.eclipse.paho.android.service.pfc.model.Connection.ConnectionStatus;
-import org.eclipse.paho.android.service.pfc.model.Connections;
-import org.eclipse.paho.android.service.pfc.R;
-import org.eclipse.paho.android.service.pfc.activity.ClientConnections;
-import org.eclipse.paho.android.service.pfc.fragment.ConnectionDetails;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 
@@ -97,25 +96,25 @@ public class Listener implements OnMenuItemClickListener {
 
     switch (id)
     {
-      case R.id.publish :
+      case R.id.publish:
         publish();
         break;
-      case R.id.subscribe :
+      case R.id.subscribe:
         subscribe();
         break;
-      case R.id.newConnection :
+      case R.id.newConnection:
         createAndConnect();
         break;
-      case R.id.disconnect :
+      case R.id.disconnect:
         disconnect();
         break;
-      case R.id.connectMenuOption :
+      case R.id.connectMenuOption:
         reconnect();
         break;
-      case R.id.startLogging :
+      case R.id.startLogging:
         enablePahoLogging();
         break;
-      case R.id.endLogging :
+      case R.id.endLogging:
         disablePahoLogging();
         break;
     }
@@ -128,11 +127,11 @@ public class Listener implements OnMenuItemClickListener {
    */
   private void reconnect() {
 
-    Connections.getInstance(context).getConnection(clientHandle).changeConnectionStatus(ConnectionStatus.CONNECTING);
+    Connections.getInstance(context).getConnection(clientHandle).changeConnectionStatus(Connection.ConnectionStatus.CONNECTING);
 
     Connection c = Connections.getInstance(context).getConnection(clientHandle);
     try {
-      c.getClient().connect(c.getConnectionOptions(), null, new ActionListener(context, Action.CONNECT, clientHandle, null));
+      c.getClient().connect(c.getConnectionOptions(), null, new ActionListener(context, ActionListener.Action.CONNECT, clientHandle, null));
     }
     catch (MqttSecurityException e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to reconnect the client with the handle " + clientHandle, e);
@@ -158,8 +157,8 @@ public class Listener implements OnMenuItemClickListener {
     }
 
     try {
-      c.getClient().disconnect(null, new ActionListener(context, Action.DISCONNECT, clientHandle, null));
-      c.changeConnectionStatus(ConnectionStatus.DISCONNECTING);
+      c.getClient().disconnect(null, new ActionListener(context, ActionListener.Action.DISCONNECT, clientHandle, null));
+      c.changeConnectionStatus(Connection.ConnectionStatus.DISCONNECTING);
     }
     catch (MqttException e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to disconnect the client with the handle " + clientHandle, e);
@@ -196,7 +195,7 @@ public class Listener implements OnMenuItemClickListener {
       String[] topics = new String[1];
       topics[0] = topic;
       Connections.getInstance(context).getConnection(clientHandle).getClient()
-          .subscribe(topic, qos, null, new ActionListener(context, Action.SUBSCRIBE, clientHandle, topics));
+          .subscribe(topic, qos, null, new ActionListener(context, ActionListener.Action.SUBSCRIBE, clientHandle, topics));
     }
     catch (MqttSecurityException e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to subscribe to" + topic + " the client with the handle " + clientHandle, e);
@@ -246,7 +245,7 @@ public class Listener implements OnMenuItemClickListener {
 
     try {
       Connections.getInstance(context).getConnection(clientHandle).getClient()
-          .publish(topic, message.getBytes(), qos, retained, null, new ActionListener(context, Action.PUBLISH, clientHandle, args));
+          .publish(topic, message.getBytes(), qos, retained, null, new ActionListener(context, ActionListener.Action.PUBLISH, clientHandle, args));
     }
     catch (MqttSecurityException e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);

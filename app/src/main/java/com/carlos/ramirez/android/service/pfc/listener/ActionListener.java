@@ -10,16 +10,16 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.listener;
+package com.carlos.ramirez.android.service.pfc.listener;
 
 import android.content.Context;
 import android.widget.Toast;
 
-import org.eclipse.paho.android.service.pfc.model.Connection;
-import org.eclipse.paho.android.service.pfc.model.Connection.ConnectionStatus;
-import org.eclipse.paho.android.service.pfc.model.Connections;
-import org.eclipse.paho.android.service.pfc.util.Notify;
-import org.eclipse.paho.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.model.Connection;
+import com.carlos.ramirez.android.service.pfc.model.Connections;
+
+import com.carlos.ramirez.android.service.pfc.util.Notify;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
@@ -139,7 +139,7 @@ public class ActionListener implements IMqttActionListener {
    */
   private void disconnect() {
     Connection c = Connections.getInstance(context).getConnection(clientHandle);
-    c.changeConnectionStatus(ConnectionStatus.DISCONNECTED);
+    c.changeConnectionStatus(Connection.ConnectionStatus.DISCONNECTED);
     String actionTaken = context.getString(R.string.toast_disconnected);
     c.addAction(actionTaken);
 
@@ -219,7 +219,7 @@ public class ActionListener implements IMqttActionListener {
    */
   private void disconnect(Throwable exception) {
     Connection c = Connections.getInstance(context).getConnection(clientHandle);
-    c.changeConnectionStatus(ConnectionStatus.DISCONNECTED);
+    c.changeConnectionStatus(Connection.ConnectionStatus.DISCONNECTED);
     c.addAction("Disconnect Failed - an error occured");
 
   }

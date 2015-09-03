@@ -10,7 +10,7 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.util;
+package com.carlos.ramirez.android.service.pfc.util;
 
 
 import android.app.Activity;
@@ -25,8 +25,9 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import org.eclipse.paho.android.service.pfc.R;
-import org.eclipse.paho.android.service.pfc.callback.CallbackBundle;
+
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.callback.CallbackBundle;
 
 import java.io.File;
 import java.util.ArrayList;

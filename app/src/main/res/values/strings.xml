@@ -12,99 +12,96 @@ IBM Corp.
 <resources>
 
     <string name="app_name">MQTT</string>
-    <string name="menu_settings">Settings</string>
-    <string name="server">Server</string>
-    <string name="port">Port</string>
-    <string name="connect">Connect</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="server">Servidor</string>
+    <string name="port">Puerto</string>
+    <string name="connect">Conectar</string>
 
-    <string name="newConnection">New Connection</string>
+    <string name="newConnection">Nueva Conexión</string>
     <string name="newConnectionShort">+</string>
 
-    <string name="title_activity_new_connection">New Connection</string>
-    <string name="clientID">Client ID</string>
-    <string name="connectedto">Connected to </string>
+    <string name="title_activity_new_connection">Nueva Conexión</string>
+    <string name="clientID">Cliente ID</string>
+    <string name="connectedto">Conectado a</string>
 
-    <string name="Disconnect">Disconnect</string>
-    <string name="subscribe">Subscribe</string>
-    <string name="publish">Publish</string>
-    <string name="title_activity_subscribe">Subscribe</string>
-    <string name="disconnected">Disconnected from</string>
+    <string name="Disconnect">Desconectar</string>
+    <string name="subscribe">Subscribir</string>
+    <string name="publish">Publicar</string>
+    <string name="title_activity_subscribe">Subscribir</string>
+    <string name="disconnected">Desconectado de</string>
     <string name="topic">Topic</string>
-    <string name="history">History</string>
-    <string name="title_activity_history">History</string>
-    <string name="subscribed">Subscribed to </string>
-    <string name="token">org.eclipse.paho.android.service.sample.ClientConnections</string>
-    <string name="no_status">Unknown connection status to</string>
-    <string name="connecting">Connecting to</string>
-    <string name="disconnecting">Disconnecting from</string>
-    <string name="connectionError">An error occurred connecting to</string>
+    <string name="history">Historial</string>
+    <string name="title_activity_history">Historial</string>
+    <string name="subscribed">Subscrito a</string>
+    <string name="no_status">Estado de conexión desconocido</string>
+    <string name="connecting">Conectando a</string>
+    <string name="disconnecting">Desconectando de</string>
+    <string name="connectionError">Ha habido un error al conectar a</string>
 
-    <string name="title_activity_publish">Publish</string>
-    <string name="message">Message</string>
+    <string name="title_activity_publish">Publicar</string>
+    <string name="message">Mensaje</string>
     <string name="qos0">0</string>
     <string name="qos1">1</string>
     <string name="qos2">2</string>
     <string name="empty"></string>
     <string name="qos">QOS</string>
-    <string name="retained">Retained</string>
-    <string name="cleanSession">Clean Session</string>
-    <string name="advanced">Advanced Options</string>
-    <string name="advancedShort">Advanced</string>
-    <string name="title_activity_advanced">Advanced</string>
-    <string name="uname">User Name</string>
-    <string name="pass">Password</string>
+    <string name="retained">Flag Retained</string>
+    <string name="cleanSession">Flag Clean Session</string>
+    <string name="advanced">Opciones avanzadas</string>
+    <string name="advancedShort">Avanzado</string>
+    <string name="title_activity_advanced">Avanzado</string>
+    <string name="uname">Usuario</string>
+    <string name="pass">Contraseña</string>
     <string name="ssl">SSL</string>
     <string name="timeout">Time Out</string>
-    <string name="keepalive">Keep Alive \nTimeout</string>
+    <string name="keepalive">Keep Alive Timeout</string>
 
-    <string name="title_activity_last_will">Last Will Message</string>
-    <string name="setLastWill">Set Last Will Message</string>
-    <string name="willMessage">Set Last Will Message</string>
+    <string name="title_activity_last_will">Mensaje Last Will</string>
+    <string name="setLastWill">Configurar Mensaje Last Will</string>
+    <string name="willMessage">Configurar Mensaje Last Will</string>
     <string name="willMessageShort">Last Will</string>
-    <string name="notifyTitle">MQTT Message Received</string>
-    <string name="notifyTitle_connectionLost">MQTT Client Has Lost Connection</string>
+    <string name="notifyTitle">Mensaje MQTT Recibido</string>
+    <string name="notifyTitle_connectionLost">Cliente MQTT ha perdido la conexión</string>
 
-    <string name="save">Save</string>
-    <string name="title_activity_connection_details">Connection Details</string>
-    <string name="startLogging">Enable Logging</string>
-    <string name="endLogging">Disable Logging</string>
-	<string name="missingOptions">ClientID, server address or Port number is missing. Please correct or press back arrow cancel.</string>
+    <string name="save">Guardar</string>
+    <string name="title_activity_connection_details">Detalles de conexión</string>
+    <string name="startLogging">Activar Logs</string>
+    <string name="endLogging">Desactivar Logs</string>
+	<string name="missingOptions">Cliente ID, dirección o pueto de servidor no se han rellenado</string>
    
     <string name='dateFormat'>dd/MM/yy \'at\' HH:mm:ss</string>
-    <string name="unkown_error">Unknown Error</string>
-    <string name="delete">Delete Connection</string>
-    <string name="disconnectClient">Disconnect Client?</string> 
-    <string name="deleteDialog">The selected client is currently connected or connecting, deleting this connection will cause it to be disconnected.</string>
-    <string name="continueBtn">Continue</string>
-    <string name="cancelBtn">Cancel</string>
+    <string name="unkown_error">Error Desconocido</string>
+    <string name="delete">Borrar Conexión</string>
+    <string name="disconnectClient">Desconectar Cliente?</string>
+    <string name="deleteDialog">El cliente seleccionado está conectado o conectándose, si se borra la conexión, causará su desconexión</string>
+    <string name="continueBtn">Continuar</string>
+    <string name="cancelBtn">Cancelar</string>
     
     <!-- Strings that need formatting  -->
-    <string name="messageRecieved">Received message %1$s &lt;br/&gt; &lt;small&gt;Topic: %2$s &lt;/small&gt; </string>
+    <string name="messageRecieved">Mensaje recibido %1$s &lt;br/&gt; &lt;small&gt;Topic: %2$s &lt;/small&gt; </string>
     <string name="timestamp">&lt;br/&gt; &lt;small&gt; %1$s &lt;/small&gt;</string>
-    <string name="notification">%1$s has received %2$s on topic %3$s</string>
-    <string name="toast_pub_success">Published message: %1$s to topic: %2$s</string>
-    <string name="toast_sub_success">Subscribed to %1$s</string>
-    <string name="toast_disconnected">Disconnected</string>
-    <string name="toast_pub_failed">Failed to publish message: %1$s to topic: %2$s</string>
-    <string name="toast_sub_failed">Failed to subscribe to %1$s</string>
-    <string name="connection_lost">%1$s has lost connection to %2$s</string>
-    <string name="failure_disconnect">Disconnect failed.&lt;br/&gt; &lt;small&gt;Reason: %s&lt;/small&gt; </string>
-    <string name="failure_connect">Client failed to connect.&lt;br/&gt; &lt;small&gt;Reason: %s&lt;/small&gt;</string>
-    <string name="client_connected">Client connected successfully</string>
+    <string name="notification">%1$s ha recibido %2$s del topic %3$s</string>
+    <string name="toast_pub_success">Mensaje pubicado: %1$s al topic: %2$s</string>
+    <string name="toast_sub_success">Subscrito a %1$s</string>
+    <string name="toast_disconnected">Desconectado</string>
+    <string name="toast_pub_failed">Error al publicar mensaje: %1$s al topic: %2$s</string>
+    <string name="toast_sub_failed">Error al subscribirse a %1$s</string>
+    <string name="connection_lost">%1$s perdió la conexión a %2$s</string>
+    <string name="client_connected">Cliente conectado con éxito</string>
     
     <!-- Hints -->
-    <string name="serverURIHint">example.example.com</string>
-    <string name="portHint">1883</string>
-    <string name="contentDescriptionSSL">Enable SSL</string>
+    <string name="serverURIHint">mosquitto.test.com</string>
+    <string name="portHint">1884</string>
+    <string name="contentDescriptionSSL">Activar SSL</string>
     <string name="contentDescriptionCleanSession">Clean Session</string>
-    <string name="topicHint">hello</string>
-    <string name="messageHint">Hello World</string>
-    <string name="unameHint">user</string>
-    <string name="passwordHint">password</string>
+    <string name="topicHint">hola</string>
+    <string name="messageHint">Hola Mundo</string>
+    <string name="unameHint">Usuario</string>
+    <string name="passwordHint">Contraseña</string>
     <string name="timeoutHint">60</string>
     <string name="keepaliveHint">200</string>
     <string name="sslKeyLocaltion">file://</string>
-    <string name="select">select</string>
+    <string name="select">Abrir</string>
     
 
 </resources>

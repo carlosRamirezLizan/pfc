@@ -10,13 +10,14 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.activity;
+package com.carlos.ramirez.android.service.pfc.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -26,10 +27,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import org.eclipse.paho.android.service.pfc.util.ActivityConstants;
-import org.eclipse.paho.android.service.pfc.callback.CallbackBundle;
-import org.eclipse.paho.android.service.pfc.util.OpenFileDialog;
-import org.eclipse.paho.android.service.pfc.R;
+
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.callback.CallbackBundle;
+import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+import com.carlos.ramirez.android.service.pfc.util.OpenFileDialog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +69,7 @@ public class Advanced extends Activity {
 			showDialog(openfileDialogId);
 		}});
     
-    ((CheckBox) findViewById(R.id.sslCheckBox)).setOnClickListener(new OnClickListener(){
+    ((SwitchCompat) findViewById(R.id.sslCheckBox)).setOnClickListener(new OnClickListener(){
 
 		@Override
 		public void onClick(View v) {
@@ -138,15 +140,15 @@ public class Advanced extends Activity {
 			images.put("bks", R.drawable.ic_launcher);
 			images.put(OpenFileDialog.sEmpty, R.drawable.ic_launcher);
 			Dialog dialog = OpenFileDialog.createDialog(id, this, "openfile",
-					new CallbackBundle() {
-						@Override
-						public void callback(Bundle bundle) {
-							String filepath = bundle.getString("path");
-							// setTitle(filepath);
-							((EditText) findViewById(R.id.sslKeyLocaltion))
-									.setText(filepath);
-						}
-					}, ".bks;", images);
+                    new CallbackBundle() {
+                      @Override
+                      public void callback(Bundle bundle) {
+                        String filepath = bundle.getString("path");
+                        // setTitle(filepath);
+                        ((EditText) findViewById(R.id.sslKeyLocaltion))
+                                .setText(filepath);
+                      }
+                    }, ".bks;", images);
 			return dialog;
 		}
 		return null;

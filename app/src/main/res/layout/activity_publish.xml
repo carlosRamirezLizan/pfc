@@ -12,12 +12,14 @@ IBM Corp.
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_margin="10dp"
     android:layout_height="wrap_content" >
 
 
 <LinearLayout   
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
      android:id="@+id/topicGroup" >
     
     <TextView
@@ -30,8 +32,7 @@ IBM Corp.
     <EditText
         android:id="@+id/lastWillTopic"
         android:layout_height="wrap_content"
-        android:layout_weight="0.22"
-        android:layout_width="0dip"
+        android:layout_width="match_parent"
         android:ems="10"
         android:inputType="text"
         android:hint="@string/topicHint" />
@@ -45,6 +46,7 @@ IBM Corp.
     android:layout_height="wrap_content"
     android:id="@+id/messageGroup"
     android:layout_marginTop="25dp"
+    android:orientation="vertical"
     android:layout_below="@id/topicGroup" >
     <TextView
         android:id="@+id/messageTextView"
@@ -56,8 +58,7 @@ IBM Corp.
     
         <EditText
         android:id="@+id/lastWill"
-        android:layout_weight="0.22"
-        android:layout_width="0dip"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textMultiLine"
@@ -125,10 +126,9 @@ IBM Corp.
         android:layout_marginRight="10dp"
         android:text="@string/retained" />
 
-    <CheckBox
+    <android.support.v7.widget.SwitchCompat
         android:id="@+id/retained"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/empty" />
+        android:layout_height="wrap_content" />
 </LinearLayout>
 </RelativeLayout>

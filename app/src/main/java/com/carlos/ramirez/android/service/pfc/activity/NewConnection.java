@@ -10,12 +10,13 @@
  * and the Eclipse Distribution License is available at 
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.eclipse.paho.android.service.pfc.activity;
+package com.carlos.ramirez.android.service.pfc.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -25,9 +26,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.eclipse.paho.android.service.pfc.util.ActivityConstants;
-import org.eclipse.paho.android.service.pfc.util.Notify;
-import org.eclipse.paho.android.service.pfc.R;
+
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+import com.carlos.ramirez.android.service.pfc.util.Notify;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -147,7 +149,7 @@ public class NewConnection extends Activity {
               return false;
             }
 
-            boolean cleanSession = ((CheckBox) findViewById(R.id.cleanSessionCheckBox)).isChecked();
+            boolean cleanSession = ((SwitchCompat) findViewById(R.id.cleanSessionCheckBox)).isChecked();
             //persist server
             persistServerURI(server);
 
