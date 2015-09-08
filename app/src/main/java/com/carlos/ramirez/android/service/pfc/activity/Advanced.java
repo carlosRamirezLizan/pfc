@@ -71,11 +71,11 @@ public class Advanced extends AppCompatActivity {
       }
     });
     
-    ((CheckBox) findViewById(R.id.sslCheckBox)).setOnClickListener(new OnClickListener() {
+    (findViewById(R.id.sslCheckBox)).setOnClickListener(new OnClickListener() {
 
       @Override
       public void onClick(View v) {
-        if (((CheckBox) v).isChecked()) {
+        if (((SwitchCompat) v).isChecked()) {
           ((Button) findViewById(R.id.sslKeyBut)).setClickable(true);
         } else {
           ((Button) findViewById(R.id.sslKeyBut)).setClickable(false);

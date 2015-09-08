@@ -98,7 +98,7 @@ IBM Corp.
             android:layout_marginRight="35dip"
             android:text="@string/cleanSession" />
 
-        <CheckBox
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/cleanSessionCheckBox"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
