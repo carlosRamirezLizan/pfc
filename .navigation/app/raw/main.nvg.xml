@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.carlos.ramirez.android.service.pfc.activity.LastWill"/>
+      <point      
+        x = "3404"      
+        y = "2074"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails"/>
+      <point      
+        x = "162"      
+        y = "1937"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.MenuState"      
+        className = "com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails"/>
+      <point      
+        x = "1431"      
+        y = "1937"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.carlos.ramirez.android.service.pfc.activity.Advanced"/>
+      <point      
+        x = "2452"      
+        y = "2760"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.carlos.ramirez.android.service.pfc.activity.NewConnection"/>
+      <point      
+        x = "3318"      
+        y = "394"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.carlos.ramirez.android.service.pfc.activity.ClientConnections"/>
+      <point      
+        x = "463"      
+        y = "128"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.MenuState"      
+        className = "com.carlos.ramirez.android.service.pfc.activity.ClientConnections"/>
+      <point      
+        x = "1732"      
+        y = "128"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>

@@ -126,9 +126,16 @@ IBM Corp.
         android:layout_marginRight="10dp"
         android:text="@string/retained" />
 
-    <android.support.v7.widget.SwitchCompat
+    <CheckBox
         android:id="@+id/retained"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>
+
+    <Button
+        android:id="@+id/publish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/setLastWill"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

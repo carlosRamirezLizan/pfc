@@ -19,6 +19,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -45,21 +46,9 @@ public class LastWill extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_publish);
-
-  }
-
-  /**
-   * @see Activity#onCreateOptionsMenu(Menu)
-   */
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.activity_last_will, menu);
-
-    menu.findItem(R.id.publish).setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
+    findViewById(R.id.publish).setOnClickListener(new View.OnClickListener() {
       @Override
-      public boolean onMenuItemClick(MenuItem item) {
-
+      public void onClick(View view) {
         Intent result = new Intent();
 
         String message = ((EditText) findViewById(R.id.lastWill)).getText().toString();
@@ -83,7 +72,7 @@ public class LastWill extends Activity {
             break;
         }
 
-        boolean retained = ((SwitchCompat) findViewById(R.id.retained)).isChecked();
+        boolean retained = ((CheckBox) findViewById(R.id.retained)).isChecked();
 
         //package the data collected into the intent
         result.putExtra(ActivityConstants.message, message);
@@ -94,12 +83,8 @@ public class LastWill extends Activity {
         //set the result and finish activity
         last.setResult(RESULT_OK, result);
         last.finish();
-
-        return false;
       }
-
     });
-    return true;
-  }
 
+  }
 }

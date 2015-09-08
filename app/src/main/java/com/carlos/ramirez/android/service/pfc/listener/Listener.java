@@ -23,6 +23,7 @@ import android.widget.RadioGroup;
 
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.activity.ClientConnections;
+import com.carlos.ramirez.android.service.pfc.activity.NewConnection;
 import com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
@@ -39,18 +40,14 @@ import java.util.Map.Entry;
 import java.util.logging.LogManager;
 
 /**
- * Deals with actions performed in the {@link org.eclipse.paho.android.service.pfc.activity.ClientConnections} activity
- * and the {@link ConnectionDetails} activity and associated fragments
+ * Deals with actions performed in the ClientConnections activity
  *
  */
 public class Listener implements OnMenuItemClickListener {
 
-  /** The handle to a {@link org.eclipse.paho.android.service.pfc.model.Connection} object which contains the {@link MqttAndroidClient} associated with this object **/
   private String clientHandle = null;
 
-  /** {@link org.eclipse.paho.android.service.pfc.fragment.ConnectionDetails} reference used to perform some actions**/
   private ConnectionDetails connectionDetails = null;
-  /** {@link org.eclipse.paho.android.service.pfc.activity.ClientConnections} reference used to perform some actions**/
   private ClientConnections clientConnections = null;
   /** {@link Context} used to load and format strings **/
   private Context context = null;
@@ -61,7 +58,7 @@ public class Listener implements OnMenuItemClickListener {
   /**
    * Constructs a listener object for use with {@link ConnectionDetails} activity and
    * associated fragments.
-   * @param connectionDetails The instance of {@link org.eclipse.paho.android.service.pfc.fragment.ConnectionDetails}
+   * @param connectionDetails The instance of ConnectionDetails
    * @param clientHandle The handle to the client that the actions are to be performed on
    */
   public Listener(ConnectionDetails connectionDetails, String clientHandle)
@@ -265,9 +262,9 @@ public class Listener implements OnMenuItemClickListener {
 
     //start a new activity to gather information for a new connection
     createConnection = new Intent();
-    createConnection.setClassName(
+    createConnection.setClass(
         clientConnections.getApplicationContext(),
-        "org.eclipse.paho.android.service.sample.activity.NewConnection");
+            NewConnection.class);
 
     clientConnections.startActivityForResult(createConnection,
         ActivityConstants.connect);

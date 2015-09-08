@@ -20,6 +20,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
@@ -60,35 +61,11 @@ public class NewConnection extends Activity {
     adapter.addAll(readHosts());
     AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.serverURI);
     textView.setAdapter(adapter);
-
+    Listener listener = new Listener(this);
+    findViewById(R.id.connectAction).setOnClickListener(listener);
+    findViewById(R.id.advanced).setOnClickListener(listener);
     //load auto compete options
 
-  }
-
-  /** 
-   * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-   */
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.activity_new_connection, menu);
-    OnMenuItemClickListener listener = new Listener(this);
-    menu.findItem(R.id.connectAction).setOnMenuItemClickListener(listener);
-    menu.findItem(R.id.advanced).setOnMenuItemClickListener(listener);
-
-    return true;
-  }
-
-  /** 
-   * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
-   */
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case android.R.id.home :
-        NavUtils.navigateUpFromSameTask(this);
-        return true;
-    }
-    return super.onOptionsItemSelected(item);
   }
 
   /**
@@ -110,7 +87,7 @@ public class NewConnection extends Activity {
    * Handles action bar actions
    *
    */
-  private class Listener implements OnMenuItemClickListener {
+  private class Listener implements View.OnClickListener {
 
     //used for starting activities 
     private NewConnection newConnection = null;
@@ -124,11 +101,11 @@ public class NewConnection extends Activity {
      * @see android.view.MenuItem.OnMenuItemClickListener#onMenuItemClick(android.view.MenuItem)
      */
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
+    public void onClick(View item) {
       {
         // this will only connect need to package up and sent back
 
-        int id = item.getItemId();
+        int id = item.getId();
 
         Intent dataBundle = new Intent();
 
@@ -146,60 +123,62 @@ public class NewConnection extends Activity {
             {
               String notificationText = newConnection.getString(R.string.missingOptions);
               Notify.toast(newConnection, notificationText, Toast.LENGTH_LONG);
-              return false;
+            } else {
+
+              boolean cleanSession = ((CheckBox) findViewById(R.id.cleanSessionCheckBox)).isChecked();
+              //persist server
+              persistServerURI(server);
+
+              //put data into a bundle to be passed back to ClientConnections
+              dataBundle.putExtra(ActivityConstants.server, server);
+              dataBundle.putExtra(ActivityConstants.port, port);
+              dataBundle.putExtra(ActivityConstants.clientId, clientId);
+              dataBundle.putExtra(ActivityConstants.action, ActivityConstants.connect);
+              dataBundle.putExtra(ActivityConstants.cleanSession, cleanSession);
+
+              if (result == null) {
+                // create a new bundle and put default advanced options into a bundle
+                result = new Bundle();
+
+                result.putString(ActivityConstants.message,
+                        ActivityConstants.empty);
+                result.putString(ActivityConstants.topic, ActivityConstants.empty);
+                result.putInt(ActivityConstants.qos, ActivityConstants.defaultQos);
+                result.putBoolean(ActivityConstants.retained,
+                        ActivityConstants.defaultRetained);
+
+                result.putString(ActivityConstants.username,
+                        ActivityConstants.empty);
+                result.putString(ActivityConstants.password,
+                        ActivityConstants.empty);
+
+                result.putInt(ActivityConstants.timeout,
+                        ActivityConstants.defaultTimeOut);
+                result.putInt(ActivityConstants.keepalive,
+                        ActivityConstants.defaultKeepAlive);
+                result.putBoolean(ActivityConstants.ssl,
+                        ActivityConstants.defaultSsl);
+
+              }
+              //add result bundle to the data being returned to ClientConnections
+              dataBundle.putExtras(result);
+
+              setResult(RESULT_OK, dataBundle);
+              newConnection.finish();
             }
-
-            boolean cleanSession = ((SwitchCompat) findViewById(R.id.cleanSessionCheckBox)).isChecked();
-            //persist server
-            persistServerURI(server);
-
-            //put data into a bundle to be passed back to ClientConnections
-            dataBundle.putExtra(ActivityConstants.server, server);
-            dataBundle.putExtra(ActivityConstants.port, port);
-            dataBundle.putExtra(ActivityConstants.clientId, clientId);
-            dataBundle.putExtra(ActivityConstants.action, ActivityConstants.connect);
-            dataBundle.putExtra(ActivityConstants.cleanSession, cleanSession);
-
-            if (result == null) {
-              // create a new bundle and put default advanced options into a bundle
-              result = new Bundle();
-
-              result.putString(ActivityConstants.message,
-                  ActivityConstants.empty);
-              result.putString(ActivityConstants.topic, ActivityConstants.empty);
-              result.putInt(ActivityConstants.qos, ActivityConstants.defaultQos);
-              result.putBoolean(ActivityConstants.retained,
-                  ActivityConstants.defaultRetained);
-
-              result.putString(ActivityConstants.username,
-                  ActivityConstants.empty);
-              result.putString(ActivityConstants.password,
-                  ActivityConstants.empty);
-
-              result.putInt(ActivityConstants.timeout,
-                  ActivityConstants.defaultTimeOut);
-              result.putInt(ActivityConstants.keepalive,
-                  ActivityConstants.defaultKeepAlive);
-              result.putBoolean(ActivityConstants.ssl,
-                  ActivityConstants.defaultSsl);
-
-            }
-            //add result bundle to the data being returned to ClientConnections
-            dataBundle.putExtras(result);
-
-            setResult(RESULT_OK, dataBundle);
-            newConnection.finish();
             break;
+
           case R.id.advanced :
             //start the advanced options activity
-            dataBundle.setClassName(newConnection,
-                "org.eclipse.paho.android.service.sample.activity.Advanced");
+            dataBundle.setClass(newConnection,
+                    Advanced.class);
             newConnection.startActivityForResult(dataBundle,
                 ActivityConstants.advancedConnect);
 
             break;
+          default:
+            break;
         }
-        return false;
 
       }
 

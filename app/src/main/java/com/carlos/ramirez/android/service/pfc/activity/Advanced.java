@@ -61,43 +61,33 @@ public class Advanced extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_advanced);
     
-    ((Button) findViewById(R.id.sslKeyBut)).setOnClickListener(new OnClickListener(){
+    ((Button) findViewById(R.id.sslKeyBut)).setOnClickListener(new OnClickListener() {
 
-		@Override
-		public void onClick(View v) {
-			//showFileChooser();
-			showDialog(openfileDialogId);
-		}});
+      @Override
+      public void onClick(View v) {
+        //showFileChooser();
+        showDialog(openfileDialogId);
+      }
+    });
     
-    ((SwitchCompat) findViewById(R.id.sslCheckBox)).setOnClickListener(new OnClickListener(){
+    ((CheckBox) findViewById(R.id.sslCheckBox)).setOnClickListener(new OnClickListener() {
 
-		@Override
-		public void onClick(View v) {
-			if(((CheckBox)v).isChecked())
-			{
-				((Button)findViewById(R.id.sslKeyBut)).setClickable(true);
-			}else
-			{
-				((Button)findViewById(R.id.sslKeyBut)).setClickable(false);
-			}
-			
-		}});
+      @Override
+      public void onClick(View v) {
+        if (((CheckBox) v).isChecked()) {
+          ((Button) findViewById(R.id.sslKeyBut)).setClickable(true);
+        } else {
+          ((Button) findViewById(R.id.sslKeyBut)).setClickable(false);
+        }
+
+      }
+    });
     
     ((Button)findViewById(R.id.sslKeyBut)).setClickable(false);
-  }
-
-  /**
-   * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-   */
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.activity_advanced, menu);
 
     Listener listener = new Listener();
-    menu.findItem(R.id.setLastWill).setOnMenuItemClickListener(listener);
-    menu.findItem(R.id.ok).setOnMenuItemClickListener(listener);
-
-    return true;
+    findViewById(R.id.ok).setOnClickListener(listener);
+    findViewById(R.id.setLastWill).setOnClickListener(listener);
   }
 
   /**
@@ -158,15 +148,15 @@ public class Advanced extends Activity {
    * Deals with button clicks for the advanced options page
    *
    */
-  private class Listener implements OnMenuItemClickListener {
+  private class Listener implements OnClickListener {
 
     /**
      * @see android.view.MenuItem.OnMenuItemClickListener#onMenuItemClick(MenuItem)
      */
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
+    public void onClick(View item) {
 
-      int button = item.getItemId();
+      int button = item.getId();
 
       switch (button) {
         case R.id.ok :
@@ -177,7 +167,6 @@ public class Advanced extends Activity {
           lastWill();
           break;
       }
-      return false;
     }
 
     /**
@@ -209,7 +198,7 @@ public class Advanced extends Activity {
     private void lastWill() {
 
       Intent intent = new Intent();
-      intent.setClassName(advanced, "org.eclipse.paho.android.service.sample.activity.LastWill");
+      intent.setClass(advanced, LastWill.class);
       advanced.startActivityForResult(intent, ActivityConstants.lastWill);
 
     }

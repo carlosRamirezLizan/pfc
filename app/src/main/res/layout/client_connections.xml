@@ -12,10 +12,105 @@ IBM Corp.
  -->
 <ListView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    tools:context=".ClientConnections" >
+    tools:context=".ClientConnections">
+
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floatingButtonActionMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        app:menu_fab_size="normal"
+        app:menu_showShadow="true"
+        app:menu_shadowColor="#66000000"
+        app:menu_shadowRadius="4dp"
+        app:menu_shadowXOffset="1dp"
+        app:menu_shadowYOffset="3dp"
+        app:menu_animationDelayPerItem="50"
+        app:menu_icon="@drawable/ic_add_white"
+        app:menu_buttonSpacing="0dp"
+        app:menu_labels_margin="0dp"
+        app:menu_labels_showAnimation="@anim/jump_from_down"
+        app:menu_labels_hideAnimation="@anim/jump_to_down"
+        app:menu_labels_paddingTop="4dp"
+        app:menu_labels_paddingRight="8dp"
+        app:menu_labels_paddingBottom="4dp"
+        app:menu_labels_paddingLeft="8dp"
+        app:menu_labels_padding="8dp"
+        app:menu_labels_textColor="#FFFFFF"
+        app:menu_labels_textSize="14sp"
+        app:menu_labels_cornerRadius="3dp"
+        app:menu_labels_colorNormal="#333333"
+        app:menu_labels_colorPressed="#444444"
+        app:menu_labels_colorRipple="#66FFFFFF"
+        app:menu_labels_singleLine="false"
+        app:menu_labels_ellipsize="none"
+        app:menu_labels_maxLines="-1"
+        app:menu_labels_style="@style/MenuLabelsStyle"
+        app:menu_labels_position="left"
+        app:menu_openDirection="up"
+        app:menu_backgroundColor="@android:color/transparent">
+
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/midZoomBetweenUserLocationAndRequestsFloatingButton"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/MenuButtonsSmall.White"
+            android:layout_above="@+id/requestLocationFloatingButton"
+            android:src="@drawable/my_location_requests"
+            app:fab_label="@string/endLogging"
+            app:fab_size="normal"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/requestLocationFloatingButton"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_above="@+id/myLocationFloatingButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/MenuButtonsSmall.White"
+            android:src="@drawable/map_marker"
+            app:fab_label="@string/startLogging"
+            app:fab_size="normal"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/myLocationFloatingButton"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/MenuButtonsSmall.White"
+            android:src="@drawable/my_location"
+            app:fab_label="@string/newConnection"
+            app:fab_size="normal"
+            />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
 
 </ListView>

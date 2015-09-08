@@ -82,9 +82,8 @@ public class OpenFileDialog {
 
 		/**
 		 * Create the File Selector Dialog Window View
-		 * @param id Dialog Id
+		 * @param dialogid Dialog Id
 		 * @param context Context that the application is running in
-		 * @param title The tile of File Selector Window
 		 * @param callback A callback Bundle interface for data transport
 		 * @param suffix The file name suffix. E.g. .bks , .pem
 		 * @param images The resource id for file icon
@@ -206,7 +205,7 @@ public class OpenFileDialog {
 		/**
 		 * OnItemClick action
 		 * 
-		 * @see ListView#onItemClick(AdapterView<?> parent, View v, int position, long id)
+		 * @see ListView onItemClick(AdapterView<?> parent, View v, int position, long id)
 		 */
 		@SuppressWarnings("deprecation")
 		@Override

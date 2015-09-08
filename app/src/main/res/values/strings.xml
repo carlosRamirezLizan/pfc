@@ -47,7 +47,6 @@ IBM Corp.
     <string name="qos">QOS</string>
     <string name="retained">Flag Retained</string>
     <string name="cleanSession">Flag Clean Session</string>
-    <string name="advanced">Opciones avanzadas</string>
     <string name="advancedShort">Avanzado</string>
     <string name="title_activity_advanced">Avanzado</string>
     <string name="uname">Usuario</string>

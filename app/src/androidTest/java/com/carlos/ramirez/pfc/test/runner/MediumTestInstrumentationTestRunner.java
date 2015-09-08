@@ -1,4 +1,4 @@
-package com.radmas.iycp.runner;
+package com.carlos.ramirez.pfc.test.runner;
 
 import android.os.Bundle;
 import android.test.InstrumentationTestRunner;
@@ -6,12 +6,12 @@ import android.test.InstrumentationTestRunner;
 /**
  * Created by raddev01 on 12/12/2014.
  */
-public class SmallTestsInstrumentationTestRunner extends InstrumentationTestRunner {
+public class MediumTestInstrumentationTestRunner extends InstrumentationTestRunner {
 
     @Override
     public void onCreate(Bundle arguments) {
 
-        arguments.putString("size", "small");
+        arguments.putString("size", "medium");
 
         super.onCreate(arguments);
     }

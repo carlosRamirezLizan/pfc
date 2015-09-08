@@ -16,5 +16,6 @@ IBM Corp.
         android:id="@+id/publish"
 		android:showAsAction="ifRoom"
         android:title="@string/publish" />
+
         <item android:id="@+id/disconnect" android:title="@string/Disconnect" android:showAsAction="ifRoom"></item>
 </menu>

@@ -88,10 +88,10 @@ public class ActivityConstants {
 
   /* Property names */
 
-  /** Property name for the history field in {@link org.eclipse.paho.android.service.pfc.model.Connection} object for use with {@link java.beans.PropertyChangeEvent} **/
+  /** Property name for the history field in Connection object for use with {@link java.beans.PropertyChangeEvent} **/
   public static final String historyProperty = "history";
 
-  /** Property name for the connection status field in {@link org.eclipse.paho.android.service.pfc.model.Connection} object for use with {@link java.beans.PropertyChangeEvent} **/
+  /** Property name for the connection status field in Connection object for use with {@link java.beans.PropertyChangeEvent} **/
   public static final String ConnectionStatusProperty = "connectionStatus";
 
   /* Useful constants*/

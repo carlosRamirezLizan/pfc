@@ -9,7 +9,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
-        testApplicationId 'com.radmas.iyc.test'
+        testApplicationId 'com.carlos.ramirez.pfc.test'
         testFunctionalTest true
         testInstrumentationRunner getInstrumentationTestRunner();
     }
@@ -41,11 +41,11 @@ android {
     }
 
     productFlavors {
-        canary {
-            applicationId 'com.radmas.iycp.canary'
+        production {
+            applicationId 'com.carlos.ramirez.pfc.production'
         }
-        demo {
-            applicationId 'com.radmas.iycp.demo'
+        canary {
+            applicationId 'com.carlos.ramirez.pfc.canary'
         }
     }
 }
@@ -65,11 +65,11 @@ def getInstrumentationTestRunner() {
         switch (project.getProperties().get("testSize")) {
 
             case "small":
-                result = "com.radmas.iyc.test.runner.SmallTestsInstrumentationTestRunner";
+                result = "com.carlos.ramirez.pfc.test.runner.SmallTestsInstrumentationTestRunner";
                 break;
 
             case "medium":
-                result = "com.radmas.iyc.test.runner.MediumTestInstrumentationTestRunner";
+                result = "com.carlos.ramirez.pfc.test.runner.MediumTestInstrumentationTestRunner";
                 break;
         }
     }
@@ -80,13 +80,14 @@ def getInstrumentationTestRunner() {
 }
 
 dependencies {
-    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.4.1'
     androidTestCompile('junit:junit:4.11')
 
-    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.github.clans:fab:1.5.0'
-    compile 'com.android.support:cardview-v7:22.2.1'
 
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.0.0'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:cardview-v7:22.2.1'
     compile (group: 'org.eclipse.paho', name: 'org.eclipse.paho.android.service', version: '1.0.2') {
         exclude module: 'support-v4'
     }

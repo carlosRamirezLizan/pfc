@@ -37,9 +37,9 @@ import java.util.ArrayList;
  * <p>
  * The fragments which this FragmentActivity uses are
  * <ul>
- * <li>{@link org.eclipse.paho.android.service.pfc.fragment.HistoryFragment}
- * <li>{@link org.eclipse.paho.android.service.pfc.fragment.PublishFragment}
- * <li>{@link org.eclipse.paho.android.service.pfc.fragment.SubscribeFragment}
+ * HistoryFragment}
+ * PublishFragment
+ * SubscribeFragment
  * </ul>
  * 
  */
@@ -59,7 +59,7 @@ public class ConnectionDetails extends FragmentActivity implements
   private int selected = 0;
 
   /**
-   * The handle to the {@link org.eclipse.paho.android.service.pfc.model.Connection} which holds the data for the client
+   * The handle to the Connection which holds the data for the client
    * selected
    **/
   private String clientHandle = null;
@@ -68,7 +68,7 @@ public class ConnectionDetails extends FragmentActivity implements
   private final ConnectionDetails connectionDetails = this;
 
   /**
-   * The instance of {@link org.eclipse.paho.android.service.pfc.model.Connection} that the <code>clientHandle</code>
+   * The instance of Connection that the <code>clientHandle</code>
    * represents
    **/
   private Connection connection = null;

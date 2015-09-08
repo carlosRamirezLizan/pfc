@@ -1,22 +1,8 @@
-package com.radmas.iycp.unit;
+package com.carlos.ramirez.pfc.test.unit;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.test.InstrumentationTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
-
-import com.radmas.iycp.ApplicationController;
-import com.radmas.iycp.location.GPSTracker;
-import com.radmas.iycp.model.SQLiteOpenHelper;
-import com.radmas.iycp.model.database.Jurisdiction;
-import com.radmas.iycp.model.database.Request;
-import com.radmas.iycp.model.database.Service;
-import com.radmas.iycp.model.gson.GsonCoordinate;
-import com.radmas.iycp.model.gson.GsonJurisdiction;
-import com.radmas.iycp.model.gson.GsonRequest;
-import com.radmas.iycp.model.gson.GsonService;
-import com.radmas.iycp.utils.FilterRequest;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +12,7 @@ import java.util.List;
  */
 public class RequestsTest extends InstrumentationTestCase {
 
+/*
     private static final int TEST_DATABASE_CAPACITY = 500;
 
     @Override
@@ -315,5 +302,6 @@ public class RequestsTest extends InstrumentationTestCase {
 
         super.tearDown();
     }
+*/
 
 }

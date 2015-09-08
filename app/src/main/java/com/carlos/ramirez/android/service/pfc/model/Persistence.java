@@ -27,8 +27,8 @@ import java.util.List;
 
 /**
  * <code>Persistence</code> deals with interacting with the database to persist
- * {@link org.eclipse.paho.android.service.pfc.model.Connection} objects so created clients survive, the destruction of the
- * singleton {@link org.eclipse.paho.android.service.pfc.model.Connections} object.
+ * {@link com.carlos.ramirez.android.service.pfc.model.Connection} objects so created clients survive, the destruction of the
+ * singleton {@link com.carlos.ramirez.android.service.pfc.model.Connections} object.
  *
  */
 public class Persistence extends SQLiteOpenHelper implements BaseColumns {
