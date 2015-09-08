@@ -9,9 +9,136 @@ US Government Users Restricted Rights - Use, duplication or
 disclosure restricted by GSA ADP Schedule Contract with
 IBM Corp.
  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/main_white"
+    android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true"
+    tools:ignore="Overdraw">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
+        app:theme="@style/Toolbar"/>
+
 <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ConnectionDetails" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floatingButtonActionMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        app:menu_fab_size="normal"
+        app:menu_showShadow="true"
+        app:menu_shadowColor="#66000000"
+        app:menu_shadowRadius="4dp"
+        app:menu_shadowXOffset="1dp"
+        app:menu_shadowYOffset="3dp"
+        app:menu_animationDelayPerItem="50"
+        app:menu_icon="@drawable/fab_add"
+        app:menu_buttonSpacing="0dp"
+        app:menu_labels_margin="0dp"
+        app:menu_labels_showAnimation="@anim/jump_from_down"
+        app:menu_labels_hideAnimation="@anim/jump_to_down"
+        app:menu_labels_paddingTop="4dp"
+        app:menu_labels_paddingRight="8dp"
+        app:menu_labels_paddingBottom="4dp"
+        app:menu_labels_paddingLeft="8dp"
+        app:menu_labels_padding="8dp"
+        app:menu_labels_textColor="#FFFFFF"
+        app:menu_labels_textSize="14sp"
+        app:menu_labels_cornerRadius="3dp"
+        app:menu_labels_colorNormal="#333333"
+        app:menu_labels_colorPressed="#444444"
+        app:menu_labels_colorRipple="#66FFFFFF"
+        app:menu_labels_singleLine="false"
+        app:menu_labels_ellipsize="none"
+        app:menu_labels_maxLines="-1"
+        app:menu_labels_style="@style/MenuLabelsStyle"
+        app:menu_labels_position="left"
+        app:menu_openDirection="up"
+        app:menu_backgroundColor="@android:color/transparent">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/disconnect"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/MenuButtonsSmall"
+            android:src="@drawable/fab_add"
+            app:fab_label="@string/Disconnect"
+            app:fab_size="normal"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/subscribe"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/MenuButtonsSmall"
+            android:layout_above="@+id/requestLocationFloatingButton"
+            android:src="@drawable/fab_add"
+            app:fab_label="@string/subscribe"
+            app:fab_size="normal"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/publish"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_above="@+id/myLocationFloatingButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/MenuButtonsSmall"
+            android:src="@drawable/fab_add"
+            app:fab_label="@string/publish"
+            app:fab_size="normal"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/connectMenuOption"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/MenuButtonsSmall"
+            android:src="@drawable/fab_add"
+            app:fab_label="@string/connect"
+            app:fab_size="normal"
+            />
+
+    </com.github.clans.fab.FloatingActionMenu>
+</RelativeLayout>

@@ -15,6 +15,7 @@ package com.carlos.ramirez.android.service.pfc.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +33,7 @@ import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
  * Activity for setting the last will message for the client
  *
  */
-public class LastWill extends Activity {
+public class LastWill extends AppCompatActivity {
 
   /**
    * Reference to the current instance of <code>LastWill</code> for use with anonymous listener

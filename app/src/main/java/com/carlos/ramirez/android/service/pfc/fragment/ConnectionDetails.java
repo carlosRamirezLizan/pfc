@@ -21,11 +21,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.view.View;
 
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.listener.Listener;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
+import com.github.clans.fab.FloatingActionButton;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -82,6 +84,12 @@ public class ConnectionDetails extends FragmentActivity implements
   /**
    * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
    */
+
+  private FloatingActionButton publish;
+  private FloatingActionButton subscribe;
+  private FloatingActionButton disconnect;
+  private FloatingActionButton connectMenuOption;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -123,85 +131,23 @@ public class ConnectionDetails extends FragmentActivity implements
     connection = Connections.getInstance(this).getConnection(clientHandle);
     changeListener = new ChangeListener();
     connection.registerChangeListener(changeListener);
+
+    disconnect = (FloatingActionButton) findViewById(R.id.disconnect);
+    connectMenuOption = (FloatingActionButton) findViewById(R.id.connectMenuOption);
+    publish = (FloatingActionButton) findViewById(R.id.publish);
+    subscribe = (FloatingActionButton) findViewById(R.id.subscribe);
+
+    View.OnClickListener listener = new Listener(this, clientHandle);
+    disconnect.setOnClickListener(listener);
+    connectMenuOption.setOnClickListener(listener);
+    publish.setOnClickListener(listener);
+    subscribe.setOnClickListener(listener);
   }
 
   @Override
   protected void onDestroy() {
     connection.removeChangeListener(null);
     super.onDestroy();
-  }
-
-  /**
-   * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-   */
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    int menuID;
-    Integer button = null;
-    boolean connected = Connections.getInstance(this)
-        .getConnection(clientHandle).isConnected();
-
-    // Select the correct action bar menu to display based on the
-    // connectionStatus and which tab is selected
-    if (connected) {
-
-      switch (selected) {
-        case 0 : // history view
-          menuID = R.menu.activity_connection_details;
-          break;
-        case 1 : // subscribe view
-          menuID = R.menu.activity_subscribe;
-          button = R.id.subscribe;
-          break;
-        case 2 : // publish view
-          menuID = R.menu.activity_publish;
-          button = R.id.publish;
-          break;
-        default :
-          menuID = R.menu.activity_connection_details;
-          break;
-      }
-    }
-    else {
-      switch (selected) {
-        case 0 : // history view
-          menuID = R.menu.activity_connection_details_disconnected;
-          break;
-        case 1 : // subscribe view
-          menuID = R.menu.activity_subscribe_disconnected;
-          button = R.id.subscribe;
-          break;
-        case 2 : // publish view
-          menuID = R.menu.activity_publish_disconnected;
-          button = R.id.publish;
-          break;
-        default :
-          menuID = R.menu.activity_connection_details_disconnected;
-          break;
-      }
-    }
-    // inflate the menu selected
-    getMenuInflater().inflate(menuID, menu);
-    Listener listener = new Listener(this, clientHandle);
-    // add listeners
-    if (button != null) {
-      // add listeners
-      menu.findItem(button).setOnMenuItemClickListener(listener);
-      if (!Connections.getInstance(this).getConnection(clientHandle)
-          .isConnected()) {
-        menu.findItem(button).setEnabled(false);
-      }
-    }
-    // add the listener to the disconnect or connect menu option
-    if (connected) {
-      menu.findItem(R.id.disconnect).setOnMenuItemClickListener(listener);
-    }
-    else {
-      menu.findItem(R.id.connectMenuOption).setOnMenuItemClickListener(
-          listener);
-    }
-
-    return true;
   }
 
   /**

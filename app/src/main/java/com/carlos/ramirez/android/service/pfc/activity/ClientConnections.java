@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -33,11 +34,13 @@ import android.widget.ListView;
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.callback.MqttCallbackHandler;
 import com.carlos.ramirez.android.service.pfc.callback.MqttTraceCallback;
+import com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails;
 import com.carlos.ramirez.android.service.pfc.listener.ActionListener;
 import com.carlos.ramirez.android.service.pfc.listener.Listener;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
 import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+import com.github.clans.fab.FloatingActionButton;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -48,6 +51,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,7 +59,7 @@ import java.util.Map;
  * displays all the active connections.
  * 
  */
-public class ClientConnections extends ListActivity {
+public class ClientConnections extends AppCompatActivity {
 
   /**
    * Token to pass to the MQTT Service
@@ -82,19 +86,33 @@ public class ClientConnections extends ListActivity {
    */
   private boolean contextualActionBarActive = false;
 
+  private ListView connectionList;
+  private FloatingActionButton newConnectionFloatingButton;
+  private FloatingActionButton enableLogFloatingButton;
+  private FloatingActionButton disableLogFloatingButton;
+
+
   /**
    * @see android.app.ListActivity#onCreate(Bundle)
    */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.client_connections);
 
-    ListView connectionList = getListView();
+    connectionList = (ListView) findViewById(R.id.list);
     connectionList.setOnItemLongClickListener(new LongClickItemListener());
     connectionList.setTextFilterEnabled(true);
-    arrayAdapter = new ArrayAdapter<Connection>(this,
+    arrayAdapter = new ArrayAdapter<>(this,
         R.layout.connection_text_view);
-    setListAdapter(arrayAdapter);
+    connectionList.setAdapter(arrayAdapter);
+    newConnectionFloatingButton = (FloatingActionButton) findViewById(R.id.newConnection);
+    disableLogFloatingButton = (FloatingActionButton) findViewById(R.id.endLogging);
+    enableLogFloatingButton = (FloatingActionButton) findViewById(R.id.startLogging);
+    View.OnClickListener listener = new Listener(this);
+    newConnectionFloatingButton.setOnClickListener(listener);
+    enableLogFloatingButton.setOnClickListener(listener);
+    disableLogFloatingButton.setOnClickListener(listener);
 
     // get all the available connections
     Map<String, Connection> connections = Connections.getInstance(this)
@@ -107,62 +125,33 @@ public class ClientConnections extends ListActivity {
       }
     }
 
+    connectionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        if (!contextualActionBarActive) {
+          Connection c = arrayAdapter.getItem(position);
+
+          // start the connectionDetails activity to display the details about the
+          // selected connection
+          Intent intent = new Intent();
+          intent.setClass(getApplicationContext(),
+                  ConnectionDetails.class);
+          intent.putExtra("handle", c.handle());
+          startActivity(intent);
+        }
+      }
+    });
+
   }
 
-  /**
-   * Creates the action bar for the activity
-   * 
-   * @see ListActivity#onCreateOptionsMenu(Menu)
-   */
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-
-    OnMenuItemClickListener menuItemClickListener = new Listener(this);
-
-    //load the correct menu depending on the status of logging
-    if (Listener.logging)
-    {
-      getMenuInflater().inflate(R.menu.activity_connections_logging, menu);
-      menu.findItem(R.id.endLogging).setOnMenuItemClickListener(menuItemClickListener);
+  private void setFloatingButtonsEnabled(){
+    if(Listener.logging){
+      disableLogFloatingButton.setEnabled(true);
+      enableLogFloatingButton.setEnabled(false);
+    } else {
+      disableLogFloatingButton.setEnabled(false);
+      enableLogFloatingButton.setEnabled(true);
     }
-    else {
-      getMenuInflater().inflate(R.menu.activity_connections, menu);
-      menu.findItem(R.id.startLogging).setOnMenuItemClickListener(menuItemClickListener);
-    }
-
-    menu.findItem(R.id.newConnection).setOnMenuItemClickListener(
-        menuItemClickListener);
-
-    return true;
-  }
-
-  /**
-   * Listens for item clicks on the view
-   * 
-   * @param listView
-   *            The list view where the click originated from
-   * @param view
-   *            The view which was clicked
-   * @param position
-   *            The position in the list that was clicked
-   */
-  @Override
-  protected void onListItemClick(ListView listView, View view, int position,
-      long id) {
-    super.onListItemClick(listView, view, position, id);
-
-    if (!contextualActionBarActive) {
-      Connection c = arrayAdapter.getItem(position);
-
-      // start the connectionDetails activity to display the details about the
-      // selected connection
-      Intent intent = new Intent();
-      intent.setClassName(getApplicationContext().getPackageName(),
-          "org.eclipse.paho.android.service.sample.fragment.ConnectionDetails");
-      intent.putExtra("handle", c.handle());
-      startActivity(intent);
-    }
-
   }
 
   /**
@@ -198,6 +187,8 @@ public class ClientConnections extends ListActivity {
       connection.getClient().registerResources(this);
       connection.getClient().setCallback(new MqttCallbackHandler(this, connection.getClient().getServerURI()+connection.getClient().getClientId()));
     }
+
+    setFloatingButtonsEnabled();
   }
 
   /**
@@ -218,7 +209,7 @@ public class ClientConnections extends ListActivity {
   /**
    * Process data from the connect action
    * 
-   * @param data the {@link Bundle} returned by the {@link org.eclipse.paho.android.service.pfc.activity.NewConnection} Acitivty
+   * @param data the {@link Bundle} returned by the {@link NewConnection} Acitivty
    */
   private void connectAction(Bundle data) {
     MqttConnectOptions conOpt = new MqttConnectOptions();
@@ -377,7 +368,7 @@ public class ClientConnections extends ListActivity {
       clientConnections.startActionMode(this);
       selected = position;
       selectedView = view;
-      clientConnections.getListView().setSelection(position);
+      connectionList.setSelection(position);
       view.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
       return true;
     }

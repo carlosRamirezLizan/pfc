@@ -17,6 +17,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +41,7 @@ import java.util.Map;
  * Advanced connection options activity
  *
  */
-public class Advanced extends Activity {
+public class Advanced extends AppCompatActivity {
 
   /**
    * Reference to this class used in {@link Advanced.Listener} methods

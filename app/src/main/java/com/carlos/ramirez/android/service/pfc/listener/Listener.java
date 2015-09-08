@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -43,7 +44,7 @@ import java.util.logging.LogManager;
  * Deals with actions performed in the ClientConnections activity
  *
  */
-public class Listener implements OnMenuItemClickListener {
+public class Listener implements View.OnClickListener {
 
   private String clientHandle = null;
 
@@ -87,9 +88,9 @@ public class Listener implements OnMenuItemClickListener {
    * 
    */
   @Override
-  public boolean onMenuItemClick(MenuItem item) {
+  public void onClick(View item) {
 
-    int id = item.getItemId();
+    int id = item.getId();
 
     switch (id)
     {
@@ -114,9 +115,9 @@ public class Listener implements OnMenuItemClickListener {
       case R.id.endLogging:
         disablePahoLogging();
         break;
+      default:
+        break;
     }
-
-    return false;
   }
 
   /**

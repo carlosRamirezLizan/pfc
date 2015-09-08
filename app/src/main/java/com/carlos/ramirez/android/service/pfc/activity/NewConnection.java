@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
  * Handles collection of user information to create a new MQTT Client
  *
  */
-public class NewConnection extends Activity {
+public class NewConnection extends AppCompatActivity {
 
   /** {@link Bundle} which holds data from activities launched from this activity **/
   private Bundle result = null;
