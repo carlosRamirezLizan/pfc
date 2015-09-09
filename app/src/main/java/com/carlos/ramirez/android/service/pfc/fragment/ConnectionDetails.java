@@ -114,10 +114,15 @@ public class ConnectionDetails extends AppCompatActivity {
     viewPager.setAdapter(sectionsPagerAdapter);
 
     TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+
     tabLayout.setupWithViewPager(viewPager);
+
     tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
       @Override
       public void onTabSelected(TabLayout.Tab tab) {
+
+        setFloatingButtonsVisibility(selected);
+
         viewPager.setCurrentItem(tab.getPosition());
         selected = tab.getPosition();
         // invalidate the options menu so it can be updated
@@ -152,6 +157,32 @@ public class ConnectionDetails extends AppCompatActivity {
     connectMenuOption.setOnClickListener(listener);
     publish.setOnClickListener(listener);
     subscribe.setOnClickListener(listener);
+    setFloatingButtonsVisibility(0);
+  }
+
+  private void setFloatingButtonsVisibility(int tabPosition){
+    switch (tabPosition){
+      case 0:
+        publish.setVisibility(View.INVISIBLE);
+        subscribe.setVisibility(View.INVISIBLE);
+        break;
+      case 1:
+        publish.setVisibility(View.INVISIBLE);
+        subscribe.setVisibility(View.VISIBLE);
+        break;
+      case 2:
+        publish.setVisibility(View.VISIBLE);
+        subscribe.setVisibility(View.INVISIBLE);
+        break;
+    }
+
+    if(connection.isConnected()){
+      connectMenuOption.setVisibility(View.INVISIBLE);
+      disconnect.setVisibility(View.VISIBLE);
+    } else {
+      connectMenuOption.setVisibility(View.VISIBLE);
+      disconnect.setVisibility(View.INVISIBLE);
+    }
   }
 
   @Override

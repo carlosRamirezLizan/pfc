@@ -12,26 +12,23 @@
  */
 package com.carlos.ramirez.android.service.pfc.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.text.TextUtils;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+import com.carlos.ramirez.android.service.pfc.model.Application;
 import com.carlos.ramirez.android.service.pfc.util.Notify;
 import com.carlos.ramirez.android.service.pfc.util.Utils;
 
@@ -52,6 +49,7 @@ public class NewConnection extends AppCompatActivity {
   /** {@link Bundle} which holds data from activities launched from this activity **/
   private Bundle result = null;
 
+  private Application app;
   /** 
    * @see android.app.Activity#onCreate(android.os.Bundle)
    */
@@ -68,6 +66,17 @@ public class NewConnection extends AppCompatActivity {
     Listener listener = new Listener(this);
     findViewById(R.id.connectAction).setOnClickListener(listener);
     findViewById(R.id.advanced).setOnClickListener(listener);
+
+    app = Utils.loadServerPreferencesFromJson(this);
+    if(app!=null){
+      if(!TextUtils.isEmpty(app.getServer_url())){
+        ((AutoCompleteTextView) findViewById(R.id.serverURI)).setHint(app.getServer_url());
+      }
+      if(!TextUtils.isEmpty(app.getPort())){
+        ((EditText) findViewById(R.id.port)).setHint(app.getPort());
+      }
+    }
+
     //load auto compete options
 
   }
@@ -123,6 +132,12 @@ public class NewConnection extends AppCompatActivity {
             String clientId = ((EditText) findViewById(R.id.clientId))
                 .getText().toString();
 
+            if(server.equals(ActivityConstants.empty)){
+              server = app.getServer_url();
+            }
+            if(port.equals(ActivityConstants.empty)){
+              port = app.getPort();
+            }
             if (server.equals(ActivityConstants.empty) || port.equals(ActivityConstants.empty) || clientId.equals(ActivityConstants.empty))
             {
               String notificationText = newConnection.getString(R.string.missingOptions);
