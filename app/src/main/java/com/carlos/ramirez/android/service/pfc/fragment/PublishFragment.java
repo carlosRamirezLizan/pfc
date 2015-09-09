@@ -14,9 +14,11 @@ package com.carlos.ramirez.android.service.pfc.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.carlos.ramirez.android.service.pfc.R;
 
@@ -34,7 +36,12 @@ public class PublishFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
 
-    return LayoutInflater.from(getActivity()).inflate(R.layout.activity_publish, null);
+    View view  = LayoutInflater.from(getActivity()).inflate(R.layout.activity_publish, null);
+    Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+    Button lastWillButton = (Button) view.findViewById(R.id.publish);
+    lastWillButton.setVisibility(View.GONE);
+    toolbar.setVisibility(View.GONE);
+    return view;
 
   }
 

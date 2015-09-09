@@ -15,8 +15,11 @@ package com.carlos.ramirez.android.service.pfc.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -27,6 +30,7 @@ import android.widget.RadioGroup;
 
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+import com.carlos.ramirez.android.service.pfc.util.Utils;
 
 
 /**
@@ -47,6 +51,8 @@ public class LastWill extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_publish);
+    Utils.setUpToolBar(this);
+
     findViewById(R.id.publish).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -73,7 +79,7 @@ public class LastWill extends AppCompatActivity {
             break;
         }
 
-        boolean retained = ((CheckBox) findViewById(R.id.retained)).isChecked();
+        boolean retained = ((SwitchCompat) findViewById(R.id.retained)).isChecked();
 
         //package the data collected into the intent
         result.putExtra(ActivityConstants.message, message);
@@ -87,5 +93,18 @@ public class LastWill extends AppCompatActivity {
       }
     });
 
+  }
+
+
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home :
+      case android.R.id.title:
+        NavUtils.navigateUpFromSameTask(this);
+        return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 }

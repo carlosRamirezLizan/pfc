@@ -17,8 +17,10 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -33,6 +35,7 @@ import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.callback.CallbackBundle;
 import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
 import com.carlos.ramirez.android.service.pfc.util.OpenFileDialog;
+import com.carlos.ramirez.android.service.pfc.util.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +64,8 @@ public class Advanced extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_advanced);
-    
+
+    Utils.setUpToolBar(this);
     ((Button) findViewById(R.id.sslKeyBut)).setOnClickListener(new OnClickListener() {
 
       @Override
@@ -91,6 +95,7 @@ public class Advanced extends AppCompatActivity {
     findViewById(R.id.setLastWill).setOnClickListener(listener);
   }
 
+
   /**
    * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
    */
@@ -98,6 +103,7 @@ public class Advanced extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home :
+      case android.R.id.title:
         NavUtils.navigateUpFromSameTask(this);
         return true;
     }
@@ -231,7 +237,7 @@ public class Advanced extends AppCompatActivity {
       String password = ((EditText) findViewById(R.id.password))
           .getText().toString();
       String sslkey = null;
-      boolean ssl = ((CheckBox) findViewById(R.id.sslCheckBox)).isChecked();
+      boolean ssl = ((SwitchCompat) findViewById(R.id.sslCheckBox)).isChecked();
       if(ssl)
       {
     	  sslkey = ((EditText) findViewById(R.id.sslKeyLocaltion))

@@ -10,17 +10,25 @@ disclosure restricted by GSA ADP Schedule Contract with
 IBM Corp.
  -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_margin="10dp"
-    android:layout_height="wrap_content" >
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
+        app:theme="@style/Toolbar"/>
 
 <LinearLayout   
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_below="@id/toolbar"
+    android:layout_marginTop="10dp"
+    android:layout_margin="10dp"
     android:orientation="vertical"
-     android:id="@+id/topicGroup" >
+    android:id="@+id/topicGroup" >
     
     <TextView
         android:id="@+id/topictextView"
@@ -47,6 +55,7 @@ IBM Corp.
     android:id="@+id/messageGroup"
     android:layout_marginTop="25dp"
     android:orientation="vertical"
+    android:layout_margin="10dp"
     android:layout_below="@id/topicGroup" >
     <TextView
         android:id="@+id/messageTextView"
@@ -72,6 +81,7 @@ IBM Corp.
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/qosGroup"
+    android:layout_margin="10dp"
     android:layout_marginTop="25dp"
     android:layout_below="@id/messageGroup" >
 
@@ -116,6 +126,7 @@ IBM Corp.
 <LinearLayout   
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="10dp"
     android:id="@+id/retainedGroup"
     android:layout_below="@id/qosGroup"
     android:layout_marginTop="25dp" >

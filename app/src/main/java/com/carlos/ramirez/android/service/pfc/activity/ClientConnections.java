@@ -19,6 +19,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -34,13 +35,16 @@ import android.widget.ListView;
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.callback.MqttCallbackHandler;
 import com.carlos.ramirez.android.service.pfc.callback.MqttTraceCallback;
+import com.carlos.ramirez.android.service.pfc.event.LogginChanged;
 import com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails;
 import com.carlos.ramirez.android.service.pfc.listener.ActionListener;
 import com.carlos.ramirez.android.service.pfc.listener.Listener;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
 import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+import com.carlos.ramirez.android.service.pfc.util.Utils;
 import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -53,6 +57,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
+
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * ClientConnections is the main activity for the sample application, it
@@ -85,11 +92,13 @@ public class ClientConnections extends AppCompatActivity {
    * Contextual action bar active or not
    */
   private boolean contextualActionBarActive = false;
+  private static boolean activityVisible;
 
   private ListView connectionList;
   private FloatingActionButton newConnectionFloatingButton;
   private FloatingActionButton enableLogFloatingButton;
   private FloatingActionButton disableLogFloatingButton;
+  private FloatingActionMenu floatingButtonActionMenu;
 
 
   /**
@@ -99,6 +108,9 @@ public class ClientConnections extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.client_connections);
+    Utils.setUpToolBar(this);
+    EventBus.getDefault().register(this);
+    activityVisible = true;
 
     connectionList = (ListView) findViewById(R.id.list);
     connectionList.setOnItemLongClickListener(new LongClickItemListener());
@@ -106,6 +118,7 @@ public class ClientConnections extends AppCompatActivity {
     arrayAdapter = new ArrayAdapter<>(this,
         R.layout.connection_text_view);
     connectionList.setAdapter(arrayAdapter);
+    floatingButtonActionMenu = (FloatingActionMenu) findViewById(R.id.floatingButtonActionMenu);
     newConnectionFloatingButton = (FloatingActionButton) findViewById(R.id.newConnection);
     disableLogFloatingButton = (FloatingActionButton) findViewById(R.id.endLogging);
     enableLogFloatingButton = (FloatingActionButton) findViewById(R.id.startLogging);
@@ -144,16 +157,6 @@ public class ClientConnections extends AppCompatActivity {
 
   }
 
-  private void setFloatingButtonsEnabled(){
-    if(Listener.logging){
-      disableLogFloatingButton.setEnabled(true);
-      enableLogFloatingButton.setEnabled(false);
-    } else {
-      disableLogFloatingButton.setEnabled(false);
-      enableLogFloatingButton.setEnabled(true);
-    }
-  }
-
   /**
    * @see ListActivity#onActivityResult(int,int,Intent)
    */
@@ -185,10 +188,24 @@ public class ClientConnections extends AppCompatActivity {
     //Register receivers again
     for (Connection connection : connections.values()){
       connection.getClient().registerResources(this);
-      connection.getClient().setCallback(new MqttCallbackHandler(this, connection.getClient().getServerURI()+connection.getClient().getClientId()));
+      connection.getClient().setCallback(new MqttCallbackHandler(this, connection.getClient().getServerURI() + connection.getClient().getClientId()));
     }
+    activityVisible = true;
+    setUpFloatingButtons(Listener.logging);
+  }
 
-    setFloatingButtonsEnabled();
+  private void setUpFloatingButtons(boolean loggin){
+    if(loggin){
+      disableLogFloatingButton.setVisibility(View.VISIBLE);
+      disableLogFloatingButton.setLabelVisibility(View.VISIBLE);
+      enableLogFloatingButton.setVisibility(View.GONE);
+      enableLogFloatingButton.setLabelVisibility(View.GONE);
+    } else {
+      enableLogFloatingButton.setVisibility(View.VISIBLE);
+      enableLogFloatingButton.setLabelVisibility(View.VISIBLE);
+      disableLogFloatingButton.setVisibility(View.GONE);
+      disableLogFloatingButton.setLabelVisibility(View.GONE);
+    }
   }
 
   /**
@@ -203,7 +220,22 @@ public class ClientConnections extends AppCompatActivity {
     	connection.registerChangeListener(changeListener);
     	connection.getClient().unregisterResources();
     }
+    EventBus.getDefault().unregister(this);
     super.onDestroy();
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    activityVisible = false;
+  }
+
+  @Subscribe
+  public void onEvent(LogginChanged ev) {
+    if (activityVisible) {
+      setUpFloatingButtons(Listener.logging);
+      floatingButtonActionMenu.close(true);
+    }
   }
 
   /**

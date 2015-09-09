@@ -14,6 +14,7 @@ package com.carlos.ramirez.android.service.pfc.listener;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -25,6 +26,7 @@ import android.widget.RadioGroup;
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.activity.ClientConnections;
 import com.carlos.ramirez.android.service.pfc.activity.NewConnection;
+import com.carlos.ramirez.android.service.pfc.event.LogginChanged;
 import com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
@@ -39,6 +41,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.logging.LogManager;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Deals with actions performed in the ClientConnections activity
@@ -234,7 +238,7 @@ public class Listener implements View.OnClickListener {
         break;
     }
 
-    boolean retained = ((CheckBox) connectionDetails.findViewById(R.id.retained))
+    boolean retained = ((SwitchCompat) connectionDetails.findViewById(R.id.retained))
         .isChecked();
 
     String[] args = new String[2];
@@ -280,15 +284,13 @@ public class Listener implements View.OnClickListener {
       InputStream logPropStream = context.getResources().openRawResource(R.raw.jsr47android);
       LogManager.getLogManager().readConfiguration(logPropStream);
       logging = true;
-         
+
       HashMap<String, Connection> connections = (HashMap<String,Connection>)Connections.getInstance(context).getConnections();
       if(!connections.isEmpty()){
     	  Entry<String, Connection> entry = connections.entrySet().iterator().next();
     	  Connection connection = (Connection)entry.getValue();
     	  connection.getClient().setTraceEnabled(true);
-    	  //change menu state.
-    	  clientConnections.invalidateOptionsMenu();
-    	  //Connections.getInstance(context).getConnection(clientHandle).getClient().setTraceEnabled(true);
+
       }else{
     	  Log.i("SampleListener","No connection to enable log in service");
       }
@@ -297,6 +299,7 @@ public class Listener implements View.OnClickListener {
       Log.e("MqttAndroidClient",
           "Error reading logging parameters", e);
     }
+    EventBus.getDefault().post(new LogginChanged());
 
   }
 
@@ -306,7 +309,7 @@ public class Listener implements View.OnClickListener {
   private void disablePahoLogging() {
     LogManager.getLogManager().reset();
     logging = false;
-    
+
     HashMap<String, Connection> connections = (HashMap<String,Connection>)Connections.getInstance(context).getConnections();
     if(!connections.isEmpty()){
   	  Entry<String, Connection> entry = connections.entrySet().iterator().next();
@@ -317,7 +320,7 @@ public class Listener implements View.OnClickListener {
     }else{
   	  Log.i("SampleListener","No connection to disable log in service");
     }
-    clientConnections.invalidateOptionsMenu();
+    EventBus.getDefault().post(new LogginChanged());
   }
 
 }

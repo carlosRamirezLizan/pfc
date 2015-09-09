@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
 import com.carlos.ramirez.android.service.pfc.util.Notify;
+import com.carlos.ramirez.android.service.pfc.util.Utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -57,6 +59,7 @@ public class NewConnection extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_new_connection);
+    Utils.setUpToolBar(this);
 
     ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
     adapter.addAll(readHosts());
@@ -126,7 +129,7 @@ public class NewConnection extends AppCompatActivity {
               Notify.toast(newConnection, notificationText, Toast.LENGTH_LONG);
             } else {
 
-              boolean cleanSession = ((CheckBox) findViewById(R.id.cleanSessionCheckBox)).isChecked();
+              boolean cleanSession = ((SwitchCompat) findViewById(R.id.cleanSessionCheckBox)).isChecked();
               //persist server
               persistServerURI(server);
 
@@ -256,5 +259,16 @@ public class NewConnection extends AppCompatActivity {
 
     return hosts.toArray(new String[hosts.size()]);
 
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home :
+      case android.R.id.title:
+        NavUtils.navigateUpFromSameTask(this);
+        return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 }

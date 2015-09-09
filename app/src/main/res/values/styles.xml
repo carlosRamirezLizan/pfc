@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
     </style>
 
@@ -25,8 +25,8 @@
     </style>
 
     <style name="Toolbar" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/purple</item>
-        <item name="colorAccent">@color/light_purple</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
 
 </resources>

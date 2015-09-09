@@ -12,11 +12,21 @@ IBM Corp.
 <RelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
+        app:theme="@style/Toolbar"/>
 
 <ScrollView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_below="@id/toolbar"
+    android:layout_marginTop="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
