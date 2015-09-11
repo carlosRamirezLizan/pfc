@@ -70,7 +70,7 @@ public class Notify {
         .setContentText(messageString)
         .setTicker(ticker)
         .setWhen(when)
-        .setSmallIcon(R.drawable.ic_launcher);
+        .setSmallIcon(R.drawable.notification);
 
     Notification notification = notificationCompat.build();
     //display the notification

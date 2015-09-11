@@ -185,6 +185,51 @@ public class ConnectionDetails extends AppCompatActivity {
     }
   }
 
+
+  /**
+   * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+   */
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    int menuID;
+    Integer button = null;
+    boolean connected = Connections.getInstance(this)
+            .getConnection(clientHandle).isConnected();
+
+    // Select the correct action bar menu to display based on the
+    // connectionStatus and which tab is selected
+    if (connected) {
+      menuID = R.menu.menu_connection_details_connect;
+      button = R.id.connectMenuOption;
+    }
+    else {
+      menuID = R.menu.menu_connection_details_disconnect;
+      button = R.id.disconnect;
+    }
+    // inflate the menu selected
+    getMenuInflater().inflate(menuID, menu);
+    Listener listener = new Listener(this, clientHandle);
+    // add listeners
+    if (button != null) {
+      // add listeners
+      menu.findItem(button).setOnMenuItemClickListener(listener);
+      if (!Connections.getInstance(this).getConnection(clientHandle)
+              .isConnected()) {
+        menu.findItem(button).setEnabled(false);
+      }
+    }
+    // add the listener to the disconnect or connect menu option
+    if (connected) {
+      menu.findItem(R.id.disconnect).setOnMenuItemClickListener(listener);
+    }
+    else {
+      menu.findItem(R.id.connectMenuOption).setOnMenuItemClickListener(
+              listener);
+    }
+
+    return true;
+  }
+
   @Override
   protected void onDestroy() {
     connection.removeChangeListener(null);
