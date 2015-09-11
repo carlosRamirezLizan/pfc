@@ -103,6 +103,18 @@ IBM Corp.
     <string name="keepaliveHint">200</string>
     <string name="sslKeyLocaltion">file://</string>
     <string name="select">Abrir</string>
+    <string name="about_tittle">Acerca de</string>
+    <string name="about">Esta aplicación ha sido desarrollada con el objetivo de analizar el protocolo de comunicación
+    MQTT, un sistema basado en arquitectura publish/subscribe, en el cual diferentes clientes MQTT se comunican entre
+    si publicando mensajes a un broker externo y subscribiendose a diferentes topis para recibir información.\n\n
+    El funcionamiento de la aplicación es el siguiente:\n
+    *Para interactuar con el broker es necesario crear una conexión.\n
+    *Una vez creada, el siguiente paso es conectarse con el broker.\n
+    *Una vez establecida la conexión, es posible publicar mensajes a un topic específico y subscribirse a varios topics.\n
+    *Al subscribirse a un topic, los mensajes que se reciban se reflejarán en el historial de la conexión, así como se creará
+        una notificación para avisar al usuario.\n
+    *Para finalizar una conexión, se puede desconectar o eliminar de la aplicación.\n
+    </string>
     
 
 </resources>
