@@ -19,6 +19,8 @@ IBM Corp.
 
     <string name="newConnection">Nueva Conexión</string>
     <string name="newConnectionShort">+</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
 
     <string name="title_activity_new_connection">Nueva Conexión</string>
     <string name="clientID">Cliente ID</string>

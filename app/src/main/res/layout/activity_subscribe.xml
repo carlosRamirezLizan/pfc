@@ -81,6 +81,23 @@ IBM Corp.
             android:layout_height="wrap_content"
             android:text="@string/qos2" />
     </RadioGroup>
-    
+
 </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/subscribe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/subscribe"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/subscribe"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:background="@color/light_purple"
+        android:textColor="@color/main_white"/>
+    </LinearLayout>
 </RelativeLayout>

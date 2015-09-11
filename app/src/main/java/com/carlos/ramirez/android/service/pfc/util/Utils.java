@@ -38,7 +38,8 @@ public class Utils {
             if(!(activity instanceof ClientConnections)) {
                 actionBar.setHomeButtonEnabled(true);
                 actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setIcon(R.drawable.notification);
+            } else {
+                actionBar.setIcon(R.drawable.icon_toolbar);
             }
         }
     }

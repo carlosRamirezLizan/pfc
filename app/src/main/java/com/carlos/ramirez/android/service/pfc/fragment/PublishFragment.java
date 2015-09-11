@@ -21,6 +21,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.listener.Listener;
+import com.carlos.ramirez.android.service.pfc.model.Connection;
+import com.carlos.ramirez.android.service.pfc.model.Connections;
 
 
 /**
@@ -39,7 +42,8 @@ public class PublishFragment extends Fragment {
     View view  = LayoutInflater.from(getActivity()).inflate(R.layout.activity_publish, null);
     Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
     Button lastWillButton = (Button) view.findViewById(R.id.publish);
-    lastWillButton.setVisibility(View.GONE);
+    ConnectionDetails.publish = lastWillButton;
+    lastWillButton.setText(getString(R.string.publish));
     toolbar.setVisibility(View.GONE);
     return view;
 

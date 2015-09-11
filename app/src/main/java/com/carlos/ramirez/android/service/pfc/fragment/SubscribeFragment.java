@@ -17,8 +17,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.model.Connection;
+import com.carlos.ramirez.android.service.pfc.model.Connections;
 
 
 /**
@@ -34,8 +37,9 @@ public class SubscribeFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
 
-    return LayoutInflater.from(getActivity()).inflate(R.layout.activity_subscribe, null);
-
+    View view =  LayoutInflater.from(getActivity()).inflate(R.layout.activity_subscribe, null);
+    ConnectionDetails.subscribe = (Button) view.findViewById(R.id.subscribe);
+    return view;
   }
 
 }

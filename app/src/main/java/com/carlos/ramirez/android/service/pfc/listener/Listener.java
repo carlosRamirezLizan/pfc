@@ -48,7 +48,7 @@ import de.greenrobot.event.EventBus;
  * Deals with actions performed in the ClientConnections activity
  *
  */
-public class Listener implements View.OnClickListener {
+public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickListener {
 
   private String clientHandle = null;
 
@@ -107,12 +107,6 @@ public class Listener implements View.OnClickListener {
       case R.id.newConnection:
         createAndConnect();
         break;
-      case R.id.disconnect:
-        disconnect();
-        break;
-      case R.id.connectMenuOption:
-        reconnect();
-        break;
       case R.id.startLogging:
         enablePahoLogging();
         break;
@@ -122,6 +116,25 @@ public class Listener implements View.OnClickListener {
       default:
         break;
     }
+  }
+
+  @Override
+  public boolean onMenuItemClick(MenuItem menuItem) {
+    int id = menuItem.getItemId();
+
+    switch (id)
+    {
+      case R.id.connectMenuOption:
+        reconnect();
+        break;
+      case R.id.disconnect:
+        disconnect();
+        break;
+      default:
+        break;
+    }
+
+    return false;
   }
 
   /**

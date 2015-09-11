@@ -23,6 +23,7 @@ IBM Corp.
         app:theme="@style/Toolbar"/>
 
 <ScrollView
+    android:id="@+id/scrollView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@id/toolbar"
@@ -193,6 +194,7 @@ IBM Corp.
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="10dp"
+        android:paddingBottom="10dp"
         android:layout_alignParentBottom="true"
         android:weightSum="2">
 
@@ -200,7 +202,10 @@ IBM Corp.
 <Button
     android:id="@+id/ok"
     android:layout_width="0dp"
+    android:textColor="@color/main_white"
+    android:background="@color/light_purple"
     android:layout_height="wrap_content"
+    android:layout_marginRight="5dp"
     android:layout_weight="1"
     android:text="@string/save"
     />
@@ -210,6 +215,9 @@ IBM Corp.
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="1"
+    android:layout_marginLeft="5dp"
+    android:textColor="@color/main_white"
+    android:background="@color/light_purple"
     android:text="@string/willMessageShort"
     />
     </LinearLayout>
