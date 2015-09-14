@@ -144,7 +144,7 @@ public class ClientConnections extends AppCompatActivity {
         if (!contextualActionBarActive) {
           Connection c = arrayAdapter.getItem(position);
 
-          // start the connectionDetails activity to display the details about the
+          // start the connectionDetails activity to display the details activity_about the
           // selected connection
           Intent intent = new Intent();
           intent.setClass(getApplicationContext(),
@@ -236,6 +236,22 @@ public class ClientConnections extends AppCompatActivity {
       setUpFloatingButtons(Listener.logging);
       floatingButtonActionMenu.close(true);
     }
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_client_connections, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.about:
+        startActivity(new Intent(ClientConnections.this, About.class));
+        break;
+    }
+    return super.onOptionsItemSelected(item);
   }
 
   /**

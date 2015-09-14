@@ -14,6 +14,7 @@ package com.carlos.ramirez.android.service.pfc.fragment;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -24,9 +25,13 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.listener.Listener;
@@ -90,10 +95,8 @@ public class ConnectionDetails extends AppCompatActivity {
    * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
    */
 
-  private FloatingActionButton publish;
-  private FloatingActionButton subscribe;
-  private FloatingActionButton disconnect;
-  private FloatingActionButton connectMenuOption;
+  public static Button publish;
+  public static Button subscribe;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +124,6 @@ public class ConnectionDetails extends AppCompatActivity {
       @Override
       public void onTabSelected(TabLayout.Tab tab) {
 
-        setFloatingButtonsVisibility(selected);
-
         viewPager.setCurrentItem(tab.getPosition());
         selected = tab.getPosition();
         // invalidate the options menu so it can be updated
@@ -146,45 +147,7 @@ public class ConnectionDetails extends AppCompatActivity {
     connection = Connections.getInstance(this).getConnection(clientHandle);
     changeListener = new ChangeListener();
     connection.registerChangeListener(changeListener);
-
-    disconnect = (FloatingActionButton) findViewById(R.id.disconnect);
-    connectMenuOption = (FloatingActionButton) findViewById(R.id.connectMenuOption);
-    publish = (FloatingActionButton) findViewById(R.id.publish);
-    subscribe = (FloatingActionButton) findViewById(R.id.subscribe);
-
-    View.OnClickListener listener = new Listener(this, clientHandle);
-    disconnect.setOnClickListener(listener);
-    connectMenuOption.setOnClickListener(listener);
-    publish.setOnClickListener(listener);
-    subscribe.setOnClickListener(listener);
-    setFloatingButtonsVisibility(0);
   }
-
-  private void setFloatingButtonsVisibility(int tabPosition){
-    switch (tabPosition){
-      case 0:
-        publish.setVisibility(View.INVISIBLE);
-        subscribe.setVisibility(View.INVISIBLE);
-        break;
-      case 1:
-        publish.setVisibility(View.INVISIBLE);
-        subscribe.setVisibility(View.VISIBLE);
-        break;
-      case 2:
-        publish.setVisibility(View.VISIBLE);
-        subscribe.setVisibility(View.INVISIBLE);
-        break;
-    }
-
-    if(connection.isConnected()){
-      connectMenuOption.setVisibility(View.INVISIBLE);
-      disconnect.setVisibility(View.VISIBLE);
-    } else {
-      connectMenuOption.setVisibility(View.VISIBLE);
-      disconnect.setVisibility(View.INVISIBLE);
-    }
-  }
-
 
   /**
    * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
@@ -192,35 +155,29 @@ public class ConnectionDetails extends AppCompatActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     int menuID;
-    Integer button = null;
+    Integer button;
     boolean connected = Connections.getInstance(this)
             .getConnection(clientHandle).isConnected();
 
     // Select the correct action bar menu to display based on the
     // connectionStatus and which tab is selected
     if (connected) {
-      menuID = R.menu.menu_connection_details_connect;
-      button = R.id.connectMenuOption;
+      menuID = R.menu.menu_connection_details_disconnect;
     }
     else {
-      menuID = R.menu.menu_connection_details_disconnect;
-      button = R.id.disconnect;
+      menuID = R.menu.menu_connection_details_connect;
     }
     // inflate the menu selected
     getMenuInflater().inflate(menuID, menu);
     Listener listener = new Listener(this, clientHandle);
-    // add listeners
-    if (button != null) {
-      // add listeners
-      menu.findItem(button).setOnMenuItemClickListener(listener);
-      if (!Connections.getInstance(this).getConnection(clientHandle)
-              .isConnected()) {
-        menu.findItem(button).setEnabled(false);
-      }
-    }
+
     // add the listener to the disconnect or connect menu option
     if (connected) {
       menu.findItem(R.id.disconnect).setOnMenuItemClickListener(listener);
+      if(publish!=null && subscribe!=null) {
+        publish.setOnClickListener(listener);
+        subscribe.setOnClickListener(listener);
+      }
     }
     else {
       menu.findItem(R.id.connectMenuOption).setOnMenuItemClickListener(
@@ -255,14 +212,18 @@ public class ConnectionDetails extends AppCompatActivity {
       fragments = new ArrayList<Fragment>();
       // create the history view, passes the client handle as an argument
       // through a bundle
-      Fragment fragment = new HistoryFragment();
+      Fragment historyFragment = new HistoryFragment();
+      Fragment subscribeFragment = new SubscribeFragment();
+      Fragment publishFragment = new PublishFragment();
       Bundle args = new Bundle();
       args.putString("handle", getIntent().getStringExtra("handle"));
-      fragment.setArguments(args);
+      historyFragment.setArguments(args);
+      subscribeFragment.setArguments(args);
+      publishFragment.setArguments(args);
       // add all the fragments for the display to the fragments list
-      fragments.add(fragment);
-      fragments.add(new SubscribeFragment());
-      fragments.add(new PublishFragment());
+      fragments.add(historyFragment);
+      fragments.add(subscribeFragment);
+      fragments.add(publishFragment);
 
     }
 
@@ -286,18 +247,17 @@ public class ConnectionDetails extends AppCompatActivity {
      * 
      * @see FragmentPagerAdapter#getPageTitle(int)
      */
+    private String tabTitles[] = new String[] {
+            getString(R.string.history),
+            getString(R.string.subscribe),
+            getString(R.string.publish) };
+
+
     @Override
     public CharSequence getPageTitle(int position) {
-      switch (position) {
-        case 0 :
-          return getString(R.string.history).toUpperCase();
-        case 1 :
-          return getString(R.string.subscribe).toUpperCase();
-        case 2 :
-          return getString(R.string.publish).toUpperCase();
-      }
-      // return null if there is no title matching the position
-      return null;
+      // Generate title based on item position
+      // Replace blank spaces with image icon
+      return tabTitles[position];
     }
 
   }

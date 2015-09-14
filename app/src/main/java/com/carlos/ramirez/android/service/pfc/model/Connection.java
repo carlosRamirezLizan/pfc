@@ -36,7 +36,7 @@ import java.util.Date;
 public class Connection {
 
   /*
-   * Basic Information about the client
+   * Basic Information activity_about the client
    */
   /** ClientHandle for this Connection Object**/
   private String clientHandle = null;

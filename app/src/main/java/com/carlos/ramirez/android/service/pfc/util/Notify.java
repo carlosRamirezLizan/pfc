@@ -70,6 +70,7 @@ public class Notify {
         .setContentText(messageString)
         .setTicker(ticker)
         .setWhen(when)
+        .setColor(R.color.light_purple)
         .setSmallIcon(R.drawable.notification);
 
     Notification notification = notificationCompat.build();

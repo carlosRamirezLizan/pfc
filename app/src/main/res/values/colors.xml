@@ -3,7 +3,7 @@
 
     <color name="main_black_transparent">#80000000</color>
     <color name="main_white">#FFFFFFFF</color>
-
+    <color name="grey">#4B4B4B</color>
 
     <color name="gray_normal_menu">#7E7D7D</color>
     <color name="gray_pressed_menu">#656464</color>

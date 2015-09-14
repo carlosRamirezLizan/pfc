@@ -123,6 +123,7 @@ IBM Corp.
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_margin="10dp"
         android:layout_alignParentBottom="true"
         android:weightSum="2">
 
@@ -130,14 +131,20 @@ IBM Corp.
         <Button
             android:id="@+id/connectAction"
             android:layout_width="0dp"
+            android:textColor="@color/main_white"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:background="@color/light_purple"
             android:text="@string/connect"
             />
 
         <Button
             android:id="@+id/advanced"
+            android:layout_marginLeft="5dp"
             android:layout_width="0dp"
+            android:textColor="@color/main_white"
+            android:background="@color/light_purple"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/advancedShort"

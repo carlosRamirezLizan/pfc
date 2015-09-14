@@ -14,6 +14,7 @@ package com.carlos.ramirez.android.service.pfc.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
@@ -77,6 +78,8 @@ public class NewConnection extends AppCompatActivity {
       }
     }
 
+    ((EditText) findViewById(R.id.clientId)).setHint(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+
     //load auto compete options
 
   }
@@ -137,6 +140,9 @@ public class NewConnection extends AppCompatActivity {
             }
             if(port.equals(ActivityConstants.empty)){
               port = app.getPort();
+            }
+            if(clientId.equals(ActivityConstants.empty)){
+              clientId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
             }
             if (server.equals(ActivityConstants.empty) || port.equals(ActivityConstants.empty) || clientId.equals(ActivityConstants.empty))
             {
