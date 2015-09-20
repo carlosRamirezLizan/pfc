@@ -1,6 +1,10 @@
 package com.carlos.ramirez.android.service.pfc.location;
 
+import android.content.Context;
 import android.location.Address;
+
+import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails;
 import com.carlos.ramirez.android.service.pfc.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -18,6 +22,8 @@ import java.util.Locale;
  * © Rad(+) 2013
  */
 public class LocationService {
+
+    public static Address currentAddress;
 
     abstract public interface LocationCompletionHandler {
         void call(boolean success, Address address);
@@ -146,5 +152,41 @@ public class LocationService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Se llama cuando el usuario se desplaza a través del mapa.
+     * Actualiza el mapa para mostra la nueva localización señalizada por el usuario.
+     *
+     * @param latLng la nueva posición señalizada por el usuario.
+     */
+    private static Address getCurrentLocation(LatLng latLng)
+    {
+        if (latLng != null && latLng.latitude != 0.0) {
+
+            LocationService.getLocation(latLng, new LocationService.LocationCompletionHandler() {
+                @Override
+                public void call(boolean success, Address address) {
+                    if (success) {
+                        currentAddress = address;
+                    }
+                }
+            });
+        }
+        return currentAddress;
+    }
+
+    public static Address getUserLocation(Context context){
+        if (ConnectionDetails.location==null) {
+            ConnectionDetails.tracker = new GPSTracker(context);
+        }
+        if (ConnectionDetails.tracker.canGetLocation()) {
+            ConnectionDetails.location = ConnectionDetails.tracker.getLocation();
+            if (ConnectionDetails.location!=null) {
+                LatLng latLng = new LatLng(ConnectionDetails.location.getLatitude(), ConnectionDetails.location.getLongitude());
+                currentAddress = getCurrentLocation(latLng);
+            }
+        }
+        return currentAddress;
     }
 }

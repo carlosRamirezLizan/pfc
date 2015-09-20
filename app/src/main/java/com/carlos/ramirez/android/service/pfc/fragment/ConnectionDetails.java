@@ -15,6 +15,7 @@ package com.carlos.ramirez.android.service.pfc.fragment;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,7 @@ import android.widget.Button;
 
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.listener.Listener;
+import com.carlos.ramirez.android.service.pfc.location.GPSTracker;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
 import com.carlos.ramirez.android.service.pfc.util.Utils;
@@ -97,6 +99,9 @@ public class ConnectionDetails extends AppCompatActivity {
 
   public static Button publish;
   public static Button subscribe;
+  public static Location location;
+  public static GPSTracker tracker;
+  public static Listener.LocationThread thread;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +136,15 @@ public class ConnectionDetails extends AppCompatActivity {
         // history fragment is at position zero so get this then refresh its
         // view
         ((HistoryFragment) sectionsPagerAdapter.getItem(0)).refresh();
+        if(selected!=2){
+          if (thread != null) {
+            thread.setPaused(true);
+          }
+        } else {
+          if (thread != null){
+            thread.setPaused(false);
+          }
+        }
       }
 
       @Override
@@ -147,6 +161,11 @@ public class ConnectionDetails extends AppCompatActivity {
     connection = Connections.getInstance(this).getConnection(clientHandle);
     changeListener = new ChangeListener();
     connection.registerChangeListener(changeListener);
+
+    tracker = new GPSTracker(this);
+    if (tracker!= null && tracker.getLocation() != null) {
+      location = tracker.getLocation();
+    }
   }
 
   /**
@@ -176,6 +195,7 @@ public class ConnectionDetails extends AppCompatActivity {
       menu.findItem(R.id.disconnect).setOnMenuItemClickListener(listener);
       if(publish!=null && subscribe!=null) {
         publish.setOnClickListener(listener);
+        publish.setOnLongClickListener(listener);
         subscribe.setOnClickListener(listener);
       }
     }
@@ -190,7 +210,28 @@ public class ConnectionDetails extends AppCompatActivity {
   @Override
   protected void onDestroy() {
     connection.removeChangeListener(null);
+    if (thread != null) {
+      thread.kill();
+      thread = null;
+    }
     super.onDestroy();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    if (thread != null){
+      thread.setPaused(false);
+    }
+  }
+
+  @Override
+  protected void onPause() {
+    if (thread != null) {
+      thread.setPaused(true);
+    }
+    super.onPause();
   }
 
   /**
