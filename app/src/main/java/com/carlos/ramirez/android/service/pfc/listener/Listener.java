@@ -12,13 +12,17 @@
  */
 package com.carlos.ramirez.android.service.pfc.listener;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
 import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -26,11 +30,17 @@ import android.widget.RadioGroup;
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.activity.ClientConnections;
 import com.carlos.ramirez.android.service.pfc.activity.NewConnection;
+import com.carlos.ramirez.android.service.pfc.adapter.PublishOptionAdapter;
 import com.carlos.ramirez.android.service.pfc.event.LogginChanged;
 import com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails;
+import com.carlos.ramirez.android.service.pfc.fragment.PublishFragment;
+import com.carlos.ramirez.android.service.pfc.location.LocationService;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
+import com.carlos.ramirez.android.service.pfc.model.PublishOptions;
 import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+import com.carlos.ramirez.android.service.pfc.util.Utils;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -39,6 +49,7 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.LogManager;
 
@@ -48,7 +59,7 @@ import de.greenrobot.event.EventBus;
  * Deals with actions performed in the ClientConnections activity
  *
  */
-public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickListener {
+public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickListener, View.OnLongClickListener {
 
   private String clientHandle = null;
 
@@ -59,6 +70,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
 
   /** Whether Paho is logging is enabled**/
   public static boolean logging = false;
+
 
   /**
    * Constructs a listener object for use with {@link ConnectionDetails} activity and
@@ -99,7 +111,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     switch (id)
     {
       case R.id.publish:
-        publish();
+        publish(null);
         break;
       case R.id.subscribe:
         subscribe();
@@ -119,6 +131,20 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
   }
 
   @Override
+  public boolean onLongClick(View view) {
+    int id = view.getId();
+
+    switch (id) {
+      case R.id.publish:
+        showPublishOptionsDialog();
+        break;
+      default:
+        break;
+    }
+    return false;
+  }
+
+  @Override
   public boolean onMenuItemClick(MenuItem menuItem) {
     int id = menuItem.getItemId();
 
@@ -128,6 +154,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
         reconnect();
         break;
       case R.id.disconnect:
+        killAllThreads();
         disconnect();
         break;
       default:
@@ -135,6 +162,47 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     }
 
     return false;
+  }
+
+  private void showPublishOptionsDialog(){
+
+    Utils.showPublishOptionsDialog((Activity)context, new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        List<PublishOptions> publishOptions = Utils.getPublishOptionsList();
+        initializePublishThread(publishOptions.get(position).getId());
+      }
+    });
+  }
+
+  private void killAllThreads(){
+    if(ConnectionDetails.thread!=null) {
+      ConnectionDetails.thread.kill();
+    }
+  }
+
+  private void initializePublishThread (int publishOption){
+    switch (publishOption){
+      case 1:
+        if (ConnectionDetails.thread == null) {
+          ConnectionDetails.thread = new LocationThread();
+          ConnectionDetails.thread.start();
+        }
+        else {
+          ConnectionDetails.thread.setPaused(false);
+        }
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+      case 5:
+        break;
+      default:
+        break;
+    }
   }
 
   /**
@@ -151,8 +219,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     catch (MqttSecurityException e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to reconnect the client with the handle " + clientHandle, e);
       c.addAction("Client failed to connect");
-    }
-    catch (MqttException e) {
+    } catch (MqttException e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to reconnect the client with the handle " + clientHandle, e);
       c.addAction("Client failed to connect");
     }
@@ -174,12 +241,10 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     try {
       c.getClient().disconnect(null, new ActionListener(context, ActionListener.Action.DISCONNECT, clientHandle, null));
       c.changeConnectionStatus(Connection.ConnectionStatus.DISCONNECTING);
-    }
-    catch (MqttException e) {
+    } catch (Exception e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to disconnect the client with the handle " + clientHandle, e);
       c.addAction("Client failed to disconnect");
     }
-
   }
 
   /**
@@ -223,21 +288,39 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
   /**
    * Publish the message the user has specified
    */
-  private void publish()
+  private void publish(String message)
   {
-    String topic = ((EditText) connectionDetails.findViewById(R.id.lastWillTopic))
-        .getText().toString();
+    try{
+    EditText editText = (EditText) connectionDetails.findViewById(R.id.lastWillTopic);
+    String topic = "";
+    if(editText!=null){
+       topic = ((EditText) connectionDetails.findViewById(R.id.lastWillTopic))
+              .getText().toString();
+    }
+    if(TextUtils.isEmpty(topic)){
+      topic = "localizacion";
+    }
 
-    ((EditText) connectionDetails.findViewById(R.id.lastWillTopic)).getText().clear();
+    if(editText!=null){
+      editText.getText().clear();
+    }
 
-    String message = ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText()
-        .toString();
-
-    ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText().clear();
+    String messageToPublish;
+    if(!TextUtils.isEmpty(message)){
+      messageToPublish = message;
+    } else {
+      message = ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText()
+              .toString();
+      ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText().clear();
+    }
 
     RadioGroup radio = (RadioGroup) connectionDetails.findViewById(R.id.qosRadio);
-    int checked = radio.getCheckedRadioButtonId();
-    int qos = ActivityConstants.defaultQos;
+    int checked = 0;
+    int qos = 0;
+    if(radio!=null) {
+      checked = radio.getCheckedRadioButtonId();
+      qos = ActivityConstants.defaultQos;
+    }
 
     switch (checked) {
       case R.id.qos0 :
@@ -250,9 +333,12 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
         qos = 2;
         break;
     }
-
-    boolean retained = ((SwitchCompat) connectionDetails.findViewById(R.id.retained))
-        .isChecked();
+    SwitchCompat switchCompat = (SwitchCompat) connectionDetails.findViewById(R.id.retained);
+      boolean retained = false;
+      if(switchCompat!=null){
+         retained = switchCompat
+                .isChecked();
+      }
 
     String[] args = new String[2];
     args[0] = message;
@@ -269,6 +355,9 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
     }
 
+  }catch (NullPointerException e){
+      Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
+    }
   }
 
   /**
@@ -281,11 +370,11 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     //start a new activity to gather information for a new connection
     createConnection = new Intent();
     createConnection.setClass(
-        clientConnections.getApplicationContext(),
+            clientConnections.getApplicationContext(),
             NewConnection.class);
 
     clientConnections.startActivityForResult(createConnection,
-        ActivityConstants.connect);
+            ActivityConstants.connect);
   }
 
   /**
@@ -336,4 +425,208 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     EventBus.getDefault().post(new LogginChanged());
   }
 
+  //Thread to publish location
+  public class LocationThread extends Thread {
+    private boolean mAlive = true;
+    private boolean mPaused = false;
+
+    //Init thread
+    public LocationThread() {
+    }
+
+    @Override
+    public void run() {
+      try {
+
+        while (mAlive) {
+          if (mPaused) {
+            yield();
+          }
+          else {
+            Address address = LocationService.getUserLocation(context);
+            if(address!=null) {
+              publish(address.getAddressLine(0));
+            }
+            Thread.sleep(5000);
+          }
+        }
+      }
+      catch (InterruptedException e) {
+        Log.e("Thread", "hilo interrumpido");
+      }
+    }
+
+    public void setPaused(boolean paused) {
+      mPaused = paused;
+    }
+
+    public void kill() {
+      mAlive = false;
+      mPaused = false;
+    }
+  }
+
+  //Thread to publish location
+  public class BateryThread extends Thread {
+    private boolean mAlive = true;
+    private boolean mPaused = false;
+
+    //Init thread
+    public BateryThread() {
+    }
+
+    @Override
+    public void run() {
+      try {
+
+        while (mAlive) {
+          if (mPaused) {
+            yield();
+          }
+          else {
+            Address address = LocationService.getUserLocation(context);
+            if(address!=null) {
+              publish(address.getAddressLine(0));
+            }
+            Thread.sleep(5000);
+          }
+        }
+      }
+      catch (InterruptedException e) {
+        Log.e("Thread", "hilo interrumpido");
+      }
+    }
+
+    public void setPaused(boolean paused) {
+      mPaused = paused;
+    }
+
+    public void kill() {
+      mAlive = false;
+      mPaused = false;
+    }
+  }
+
+  //Thread to publish location
+  public class DeviceIdThread extends Thread {
+    private boolean mAlive = true;
+    private boolean mPaused = false;
+
+    //Init thread
+    public DeviceIdThread() {
+    }
+
+    @Override
+    public void run() {
+      try {
+
+        while (mAlive) {
+          if (mPaused) {
+            yield();
+          }
+          else {
+            Address address = LocationService.getUserLocation(context);
+            if(address!=null) {
+              publish(address.getAddressLine(0));
+            }
+            Thread.sleep(5000);
+          }
+        }
+      }
+      catch (InterruptedException e) {
+        Log.e("Thread", "hilo interrumpido");
+      }
+    }
+
+    public void setPaused(boolean paused) {
+      mPaused = paused;
+    }
+
+    public void kill() {
+      mAlive = false;
+      mPaused = false;
+    }
+  }
+
+  //Thread to publish location
+  public class ModelThread extends Thread {
+    private boolean mAlive = true;
+    private boolean mPaused = false;
+
+    //Init thread
+    public ModelThread() {
+    }
+
+    @Override
+    public void run() {
+      try {
+
+        while (mAlive) {
+          if (mPaused) {
+            yield();
+          }
+          else {
+            Address address = LocationService.getUserLocation(context);
+            if(address!=null) {
+              publish(address.getAddressLine(0));
+            }
+            Thread.sleep(5000);
+          }
+        }
+      }
+      catch (InterruptedException e) {
+        Log.e("Thread", "hilo interrumpido");
+      }
+    }
+
+    public void setPaused(boolean paused) {
+      mPaused = paused;
+    }
+
+    public void kill() {
+      mAlive = false;
+      mPaused = false;
+    }
+  }
+
+  //Thread to publish location
+  public class InternetStationCellThread extends Thread {
+    private boolean mAlive = true;
+    private boolean mPaused = false;
+
+    //Init thread
+    public InternetStationCellThread() {
+    }
+
+    @Override
+    public void run() {
+      try {
+
+        while (mAlive) {
+          if (mPaused) {
+            yield();
+          }
+          else {
+            Address address = LocationService.getUserLocation(context);
+            if(address!=null) {
+              publish(address.getAddressLine(0));
+            }
+            Thread.sleep(5000);
+          }
+        }
+      }
+      catch (InterruptedException e) {
+        Log.e("Thread", "hilo interrumpido");
+      }
+    }
+
+    public void setPaused(boolean paused) {
+      mPaused = paused;
+    }
+
+    public void kill() {
+      mAlive = false;
+      mPaused = false;
+    }
+  }
 }

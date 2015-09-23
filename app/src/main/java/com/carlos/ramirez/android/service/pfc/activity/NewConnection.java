@@ -147,7 +147,7 @@ public class NewConnection extends AppCompatActivity {
             if (server.equals(ActivityConstants.empty) || port.equals(ActivityConstants.empty) || clientId.equals(ActivityConstants.empty))
             {
               String notificationText = newConnection.getString(R.string.missingOptions);
-              Notify.toast(newConnection, notificationText, Toast.LENGTH_LONG);
+              Notify.toast(newConnection, notificationText, Toast.LENGTH_SHORT);
             } else {
 
               boolean cleanSession = ((SwitchCompat) findViewById(R.id.cleanSessionCheckBox)).isChecked();

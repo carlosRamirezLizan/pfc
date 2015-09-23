@@ -11,6 +11,8 @@ IBM Corp.
  -->
 <resources>
 
+    <string name="publish_options">Opciones de publicación</string>
+
     <string name="app_name">MQTT</string>
     <string name="menu_settings">Ajustes</string>
     <string name="server">Servidor</string>
