@@ -102,6 +102,10 @@ public class ConnectionDetails extends AppCompatActivity {
   public static Location location;
   public static GPSTracker tracker;
   public static Listener.LocationThread thread;
+  public static Listener.BateryThread beteryThread;
+  public static Listener.ModelThread modelThread;
+  public static Listener.InternetStationCellThread internetStationCellThread;
+  public static Listener.DeviceIdThread deviceIdThread;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
