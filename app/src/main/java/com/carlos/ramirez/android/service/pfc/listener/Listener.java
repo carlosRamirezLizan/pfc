@@ -13,9 +13,19 @@
 package com.carlos.ramirez.android.service.pfc.listener;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.location.Address;
+import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.BatteryManager;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -45,6 +55,7 @@ import com.google.android.gms.maps.model.LatLng;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +73,7 @@ import de.greenrobot.event.EventBus;
 public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickListener, View.OnLongClickListener {
 
   private String clientHandle = null;
-
+  private final int SLEEP_TIME = 60000; //one minute
   private ConnectionDetails connectionDetails = null;
   private ClientConnections clientConnections = null;
   /** {@link Context} used to load and format strings **/
@@ -193,12 +204,40 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
         }
         break;
       case 2:
+        if (ConnectionDetails.batteryThread == null) {
+          ConnectionDetails.batteryThread = new BatteryThread();
+          ConnectionDetails.batteryThread.start();
+        }
+        else {
+          ConnectionDetails.batteryThread.setPaused(false);
+        }
         break;
       case 3:
+        if (ConnectionDetails.deviceIdThread == null) {
+          ConnectionDetails.deviceIdThread = new DeviceIdThread();
+          ConnectionDetails.deviceIdThread.start();
+        }
+        else {
+          ConnectionDetails.deviceIdThread.setPaused(false);
+        }
         break;
       case 4:
+        if (ConnectionDetails.modelThread == null) {
+          ConnectionDetails.modelThread = new ModelThread();
+          ConnectionDetails.modelThread.start();
+        }
+        else {
+          ConnectionDetails.modelThread.setPaused(false);
+        }
         break;
       case 5:
+        if (ConnectionDetails.internetStationCellThread == null) {
+          ConnectionDetails.internetStationCellThread = new InternetStationCellThread();
+          ConnectionDetails.internetStationCellThread.start();
+        }
+        else {
+          ConnectionDetails.internetStationCellThread.setPaused(false);
+        }
         break;
       default:
         break;
@@ -288,9 +327,8 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
   /**
    * Publish the message the user has specified
    */
-  private void publish(String message)
+  private void publish(String message) //TODO make another publish method that publishes from threads, so no NullPointerException
   {
-    try{
     EditText editText = (EditText) connectionDetails.findViewById(R.id.lastWillTopic);
     String topic = "";
     if(editText!=null){
@@ -309,7 +347,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     if(!TextUtils.isEmpty(message)){
       messageToPublish = message;
     } else {
-      message = ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText()
+      messageToPublish = ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText()
               .toString();
       ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText().clear();
     }
@@ -346,7 +384,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
 
     try {
       Connections.getInstance(context).getConnection(clientHandle).getClient()
-          .publish(topic, message.getBytes(), qos, retained, null, new ActionListener(context, ActionListener.Action.PUBLISH, clientHandle, args));
+          .publish(topic, messageToPublish.getBytes(), qos, retained, null, new ActionListener(context, ActionListener.Action.PUBLISH, clientHandle, args));
     }
     catch (MqttSecurityException e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
@@ -355,9 +393,6 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
     }
 
-  }catch (NullPointerException e){
-      Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
-    }
   }
 
   /**
@@ -447,7 +482,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
             if(address!=null) {
               publish(address.getAddressLine(0));
             }
-            Thread.sleep(5000);
+            Thread.sleep(SLEEP_TIME);
           }
         }
       }
@@ -467,12 +502,13 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
   }
 
   //Thread to publish location
-  public class BateryThread extends Thread {
+  public class BatteryThread extends Thread {
     private boolean mAlive = true;
     private boolean mPaused = false;
 
     //Init thread
-    public BateryThread() {
+    public BatteryThread() {
+      context.registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
     @Override
@@ -484,11 +520,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
             yield();
           }
           else {
-            Address address = LocationService.getUserLocation(context);
-            if(address!=null) {
-              publish(address.getAddressLine(0));
-            }
-            Thread.sleep(5000);
+            Thread.sleep(SLEEP_TIME);
           }
         }
       }
@@ -505,7 +537,19 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       mAlive = false;
       mPaused = false;
     }
+
+    private BroadcastReceiver batteryInfoReceiver = new BroadcastReceiver() {
+      @Override
+      public void onReceive(Context context, Intent intent) {
+        int  level= intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+        if(level !=0) {
+          publish(String.valueOf(level));
+        }
+      }
+    };
   }
+
+
 
   //Thread to publish location
   public class DeviceIdThread extends Thread {
@@ -525,11 +569,12 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
             yield();
           }
           else {
-            Address address = LocationService.getUserLocation(context);
-            if(address!=null) {
-              publish(address.getAddressLine(0));
+            String android_id = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+            if(!TextUtils.isEmpty(android_id)) {
+              publish(android_id);
             }
-            Thread.sleep(5000);
+            Thread.sleep(SLEEP_TIME);
           }
         }
       }
@@ -566,17 +611,48 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
             yield();
           }
           else {
-            Address address = LocationService.getUserLocation(context);
-            if(address!=null) {
-              publish(address.getAddressLine(0));
+            String manufacturer = Build.MANUFACTURER;
+            String model = Build.MODEL;
+            String message;
+            if (model.startsWith(manufacturer)) {
+              message = capitalize(model);
+            } else if (manufacturer.equalsIgnoreCase("HTC")) {
+              // make sure "HTC" is fully capitalized.
+              message = "HTC " + model;
+            } else {
+              message = capitalize(manufacturer) + " " + model;
             }
-            Thread.sleep(5000);
+            if(TextUtils.isEmpty(message)) {
+              publish(message);
+            }
+            Thread.sleep(SLEEP_TIME);
           }
         }
       }
       catch (InterruptedException e) {
         Log.e("Thread", "hilo interrumpido");
       }
+
+    }
+
+    private String capitalize(String str) {
+      if (TextUtils.isEmpty(str)) {
+        return str;
+      }
+      char[] arr = str.toCharArray();
+      boolean capitalizeNext = true;
+      String phrase = "";
+      for (char c : arr) {
+        if (capitalizeNext && Character.isLetter(c)) {
+          phrase += Character.toUpperCase(c);
+          capitalizeNext = false;
+          continue;
+        } else if (Character.isWhitespace(c)) {
+          capitalizeNext = true;
+        }
+        phrase += c;
+      }
+      return phrase;
     }
 
     public void setPaused(boolean paused) {
@@ -607,11 +683,29 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
             yield();
           }
           else {
+            ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            //For 3G check
+            if( manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+                    .isConnectedOrConnecting()) {
+
+              Cursor cursor = context.getContentResolver().query(Uri.parse("content://telephony/carriers/preferapn"), null, null, null, null);
+              do {
+                cursor.getString(0);
+              } while (cursor.moveToNext());
+
+            } else if(manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                    .isConnectedOrConnecting()) {
+              WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+              WifiInfo info = wifiManager.getConnectionInfo();
+              info.getBSSID();
+            }
+
             Address address = LocationService.getUserLocation(context);
             if(address!=null) {
               publish(address.getAddressLine(0));
             }
-            Thread.sleep(5000);
+            Thread.sleep(SLEEP_TIME);
           }
         }
       }

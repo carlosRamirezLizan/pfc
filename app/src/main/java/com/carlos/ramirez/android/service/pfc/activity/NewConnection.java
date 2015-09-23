@@ -224,7 +224,6 @@ public class NewConnection extends AppCompatActivity {
         bfw.newLine();
       }
       catch (IOException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
       finally {
@@ -234,12 +233,10 @@ public class NewConnection extends AppCompatActivity {
           }
         }
         catch (IOException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
       }
     }
-
   }
 
   /**
@@ -273,7 +270,6 @@ public class NewConnection extends AppCompatActivity {
         }
       }
       catch (IOException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }

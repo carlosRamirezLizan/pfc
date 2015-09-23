@@ -12,26 +12,18 @@
  */
 package com.carlos.ramirez.android.service.pfc.fragment;
 
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import com.carlos.ramirez.android.service.pfc.R;
@@ -40,7 +32,6 @@ import com.carlos.ramirez.android.service.pfc.location.GPSTracker;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
 import com.carlos.ramirez.android.service.pfc.util.Utils;
-import com.github.clans.fab.FloatingActionButton;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -101,11 +92,12 @@ public class ConnectionDetails extends AppCompatActivity {
   public static Button subscribe;
   public static Location location;
   public static GPSTracker tracker;
+
   public static Listener.LocationThread thread;
-  public static Listener.BateryThread beteryThread;
-  public static Listener.ModelThread modelThread;
-  public static Listener.InternetStationCellThread internetStationCellThread;
+  public static Listener.BatteryThread batteryThread;
   public static Listener.DeviceIdThread deviceIdThread;
+  public static Listener.ModelThread modelThread;
+  public static Listener.InternetStationCellThread internetStationCellThread; //TODO kill threads
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +106,7 @@ public class ConnectionDetails extends AppCompatActivity {
     clientHandle = getIntent().getStringExtra("handle");
 
     setContentView(R.layout.activity_connection_details);
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     // Create the adapter that will return a fragment for each of the pages
     Utils.setUpToolBar(this);
 
