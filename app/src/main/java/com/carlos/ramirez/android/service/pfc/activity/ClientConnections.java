@@ -348,7 +348,7 @@ public class ClientConnections extends AppCompatActivity {
 
     conOpt.setCleanSession(cleanSession);
     conOpt.setConnectionTimeout(timeout);
-    conOpt.setKeepAliveInterval(keepalive);
+    conOpt.setKeepAliveInterval(keepalive*5); //5 minutes
     if (!username.equals(ActivityConstants.empty)) {
       conOpt.setUserName(username);
     }

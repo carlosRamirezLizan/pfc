@@ -15,8 +15,11 @@ package com.carlos.ramirez.android.service.pfc.util;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.widget.Toast;
 
@@ -90,5 +93,19 @@ public class Notify {
     Toast toast = Toast.makeText(context, text, duration);
     toast.show();
   }
+
+  public static void performBlockDeviceAction(Context context){
+      DevicePolicyManager mDPM;
+      mDPM = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+      mDPM.lockNow();
+  }
+
+  public static void performRingDeviceAction(Context context){
+      MediaPlayer mp = MediaPlayer.create(context, R.raw.sample_song);
+      Vibrator vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+      vib.vibrate(500);
+      mp.start();
+  }
+
 
 }

@@ -95,8 +95,6 @@ public class ConnectionDetails extends AppCompatActivity {
 
   public static Listener.LocationThread thread;
   public static Listener.BatteryThread batteryThread;
-  public static Listener.DeviceIdThread deviceIdThread;
-  public static Listener.ModelThread modelThread;
   public static Listener.InternetStationCellThread internetStationCellThread; //TODO kill threads
 
   @Override
@@ -194,6 +192,8 @@ public class ConnectionDetails extends AppCompatActivity {
         publish.setOnClickListener(listener);
         publish.setOnLongClickListener(listener);
         subscribe.setOnClickListener(listener);
+        subscribe.setOnLongClickListener(listener);
+
       }
     }
     else {

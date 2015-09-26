@@ -22,7 +22,7 @@ public class PublishOptionAdapter extends BaseAdapter {
     private List<PublishOptions> optionsList;
 
     public PublishOptionAdapter(Context context, List<PublishOptions> optionsList) {
-        this.layoutResourceId = R.layout.row_publish_options;
+        this.layoutResourceId = R.layout.row_options;
         this.context = context;
         this.optionsList = optionsList;
     }
@@ -57,8 +57,8 @@ public class PublishOptionAdapter extends BaseAdapter {
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ProviderUserHolder();
-            holder.publishOptionDescriptionTextView = (TextView) row.findViewById(R.id.titlePublishTextView);
-            holder.publishOptionDescriptionTextView = (TextView) row.findViewById(R.id.descriptionPublishTextView);
+            holder.publishOptionTitleTextView = (TextView) row.findViewById(R.id.titleOptionTextView);
+            holder.publishOptionDescriptionTextView = (TextView) row.findViewById(R.id.descriptionOptionTextView);
 
             row.setTag(holder);
         } else {

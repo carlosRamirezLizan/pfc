@@ -30,7 +30,7 @@ public class ActivityConstants {
   /** Default timeout*/
   public static final int defaultTimeOut = 1000;
   /** Default keep alive value*/
-  public static final int defaultKeepAlive = 10;
+  public static final int defaultKeepAlive = 60;
   /** Default SSL enabled flag*/
   public static final boolean defaultSsl = false;
   /** Default message retained flag */

@@ -16,9 +16,11 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.carlos.ramirez.android.service.pfc.R;
+import com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
 import com.carlos.ramirez.android.service.pfc.util.Notify;
+import com.carlos.ramirez.android.service.pfc.util.Utils;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -38,7 +40,7 @@ public class MqttCallbackHandler implements MqttCallback {
   /**
    * Creates an <code>MqttCallbackHandler</code> object
    * @param context The application's context
-   * @param clientHandle The handle to a {@link org.eclipse.paho.android.service.pfc.model.Connection} object
+   * @param clientHandle The handle to a Connection object
    */
   public MqttCallbackHandler(Context context, String clientHandle)
   {
@@ -51,8 +53,8 @@ public class MqttCallbackHandler implements MqttCallback {
    */
   @Override
   public void connectionLost(Throwable cause) {
-//	  cause.printStackTrace();
     if (cause != null) {
+      cause.printStackTrace();
       Connection c = Connections.getInstance(context).getConnection(clientHandle);
       c.addAction("Connection Lost");
       c.changeConnectionStatus(Connection.ConnectionStatus.DISCONNECTED);
@@ -66,11 +68,13 @@ public class MqttCallbackHandler implements MqttCallback {
 
       //build intent
       Intent intent = new Intent();
-      intent.setClassName(context, "org.eclipse.paho.android.service.sample.fragment.ConnectionDetails");
+      intent.setClass(context,
+              ConnectionDetails.class);
       intent.putExtra("handle", clientHandle);
 
       //notify the user
       Notify.notifcation(context, message, intent, R.string.notifyTitle_connectionLost);
+      //TODO volver a conectar
     }
   }
 
@@ -89,14 +93,21 @@ public class MqttCallbackHandler implements MqttCallback {
 
     //create intent to start activity
     Intent intent = new Intent();
-    intent.setClassName(context, "org.eclipse.paho.android.service.sample.fragment.ConnectionDetails");
+    intent.setClass(context,
+            ConnectionDetails.class);
     intent.putExtra("handle", clientHandle);
 
     //notify the user 
     Notify.notifcation(context, context.getString(R.string.notification, c.getId(), new String(message.getPayload()), topic), intent, R.string.notifyTitle);
-
+    if(topic.equals(Utils.BLOCK_TOPIC)){
+      Notify.performBlockDeviceAction(context);
+    }else if(topic.equals(Utils.RING_TOPIC)){
+      Notify.performRingDeviceAction(context);
+    }
     //update client history
     c.addAction(messageString);
+    //TODO llega dos veces messageArrived
+    //TODO si el topic es de sonido o bloqueo que el movil se bloquee
 
   }
 

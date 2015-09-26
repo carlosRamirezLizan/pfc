@@ -3,10 +3,7 @@ package com.carlos.ramirez.android.service.pfc.util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
@@ -15,18 +12,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.activity.ClientConnections;
 import com.carlos.ramirez.android.service.pfc.adapter.PublishOptionAdapter;
+import com.carlos.ramirez.android.service.pfc.adapter.SubscribeOptionAdapter;
 import com.carlos.ramirez.android.service.pfc.model.Application;
 import com.carlos.ramirez.android.service.pfc.model.PublishOptions;
+import com.carlos.ramirez.android.service.pfc.model.SubscribeOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -35,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -105,15 +101,29 @@ public class Utils {
         return publishOptions;
     }
 
+    public static final String BLOCK_TOPIC = "Bloqueo";
+    public static final String RING_TOPIC = "Sonido";
 
-    public static void showPublishOptionsDialog(Activity context, AdapterView.OnItemClickListener onItemClickListener) {
-        AlertDialog publishOptionsDialog;
+
+    public static List<SubscribeOptions> getSubscribeOptionsList(){
+        List<SubscribeOptions> subscribeOptions = new ArrayList<>();
+        subscribeOptions.add(new SubscribeOptions(1,"Chat", "Recibir mensajes enviados a este dispositivo"));
+        subscribeOptions.add(new SubscribeOptions(2,RING_TOPIC, "Hacer sonar el móvil cuando se haga un publish a este topic desde otro cliente"));
+        subscribeOptions.add(new SubscribeOptions(3,"Alarma", "Recibir mensajes de alarma de otros clientes"));
+        subscribeOptions.add(new SubscribeOptions(4, BLOCK_TOPIC, "Bloquear el dispositivo si se hace publish a este topic desde otro cliente"));
+
+        return subscribeOptions;
+    }
+
+    public static AlertDialog publishOptionsDialog;
+
+    public static AlertDialog showPublishOptionsDialog(Activity context, AdapterView.OnItemClickListener onItemClickListener) {
         List<PublishOptions> publishOptions = getPublishOptionsList();
         final LayoutInflater inflater = context.getLayoutInflater();
 
         PublishOptionAdapter adapter = new PublishOptionAdapter(context, publishOptions);
 
-        @SuppressLint("InflateParams") View view2 = inflater.inflate(R.layout.dialog_publish_options, null);
+        @SuppressLint("InflateParams") View view2 = inflater.inflate(R.layout.dialog_options, null);
         ((TextView) view2.findViewById(R.id.title)).setText(context.getString(R.string.publish_options));
         ListView listView = (ListView) view2.findViewById(R.id.listView);
         listView.setAdapter(adapter);
@@ -128,8 +138,36 @@ public class Utils {
         layoutParams.copyFrom(publishOptionsDialog.getWindow().getAttributes());
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        publishOptionsDialog.show();
         publishOptionsDialog.getWindow().setAttributes(layoutParams);
+        return publishOptionsDialog;
+
+    }
+
+    public static AlertDialog subscribeOptionsDialog;
+
+    public static AlertDialog showSubscribeOptionsDialog(Activity context, AdapterView.OnItemClickListener onItemClickListener) {
+        List<SubscribeOptions> subscribeOptions = getSubscribeOptionsList();
+        final LayoutInflater inflater = context.getLayoutInflater();
+
+        SubscribeOptionAdapter adapter = new SubscribeOptionAdapter(context, subscribeOptions);
+
+        @SuppressLint("InflateParams") View view2 = inflater.inflate(R.layout.dialog_options, null);
+        ((TextView) view2.findViewById(R.id.title)).setText(context.getString(R.string.subscribe_options));
+        ListView listView = (ListView) view2.findViewById(R.id.listView);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(onItemClickListener);
+        view2.setLayoutParams(new ListView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 1000));
+        subscribeOptionsDialog = new AlertDialog.Builder(context)
+                .setView(view2)
+                .create();
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(subscribeOptionsDialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        subscribeOptionsDialog.getWindow().setAttributes(layoutParams);
+        return subscribeOptionsDialog;
     }
 
 

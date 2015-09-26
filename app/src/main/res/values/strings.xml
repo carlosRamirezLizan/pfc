@@ -12,6 +12,7 @@ IBM Corp.
 <resources>
 
     <string name="publish_options">Opciones de publicación</string>
+    <string name="subscribe_options">Opciones de suscripción</string>
 
     <string name="app_name">MQTT</string>
     <string name="menu_settings">Ajustes</string>

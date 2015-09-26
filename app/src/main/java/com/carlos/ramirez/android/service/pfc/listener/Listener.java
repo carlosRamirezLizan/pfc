@@ -13,6 +13,7 @@
 package com.carlos.ramirez.android.service.pfc.listener;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v7.widget.SwitchCompat;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -36,6 +38,7 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.activity.ClientConnections;
@@ -48,7 +51,9 @@ import com.carlos.ramirez.android.service.pfc.location.LocationService;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
 import com.carlos.ramirez.android.service.pfc.model.PublishOptions;
+import com.carlos.ramirez.android.service.pfc.model.SubscribeOptions;
 import com.carlos.ramirez.android.service.pfc.util.ActivityConstants;
+import com.carlos.ramirez.android.service.pfc.util.Notify;
 import com.carlos.ramirez.android.service.pfc.util.Utils;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -149,6 +154,8 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       case R.id.publish:
         showPublishOptionsDialog();
         break;
+      case R.id.subscribe:
+        showSubscribeOptionsDialog();
       default:
         break;
     }
@@ -177,13 +184,40 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
 
   private void showPublishOptionsDialog(){
 
-    Utils.showPublishOptionsDialog((Activity)context, new AdapterView.OnItemClickListener() {
+    Utils.showPublishOptionsDialog((Activity) context, new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        if(Utils.publishOptionsDialog.isShowing()){
+          Utils.publishOptionsDialog.dismiss();
+        }
         List<PublishOptions> publishOptions = Utils.getPublishOptionsList();
         initializePublishThread(publishOptions.get(position).getId());
       }
-    });
+    }).show();
+  }
+
+  private void showSubscribeOptionsDialog(){
+
+    Utils.showSubscribeOptionsDialog((Activity) context, new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        if (Utils.subscribeOptionsDialog.isShowing()) {
+          Utils.subscribeOptionsDialog.dismiss();
+        }
+        List<SubscribeOptions> subscribeOptions = Utils.getSubscribeOptionsList();
+        if (position == 0) {
+          TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+          String mPhoneNumber = tMgr.getLine1Number();
+          if (!TextUtils.isEmpty(mPhoneNumber)) {
+            subscribeToTopic(mPhoneNumber);
+          } else {
+            Notify.toast(context, "Introduce tu número de movil en el topic para recibir mensajes destinados a ti", Toast.LENGTH_LONG);
+          }
+        } else {
+          subscribeToTopic(subscribeOptions.get(position).getTitle());
+        }
+      }
+    }).show();
   }
 
   private void killAllThreads(){
@@ -213,22 +247,10 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
         }
         break;
       case 3:
-        if (ConnectionDetails.deviceIdThread == null) {
-          ConnectionDetails.deviceIdThread = new DeviceIdThread();
-          ConnectionDetails.deviceIdThread.start();
-        }
-        else {
-          ConnectionDetails.deviceIdThread.setPaused(false);
-        }
+        publishDeviceId();
         break;
       case 4:
-        if (ConnectionDetails.modelThread == null) {
-          ConnectionDetails.modelThread = new ModelThread();
-          ConnectionDetails.modelThread.start();
-        }
-        else {
-          ConnectionDetails.modelThread.setPaused(false);
-        }
+        publishModelInfo();
         break;
       case 5:
         if (ConnectionDetails.internetStationCellThread == null) {
@@ -242,6 +264,10 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       default:
         break;
     }
+  }
+
+  private void subscribeToTopic(String topic){
+    subscribe(topic);
   }
 
   /**
@@ -283,6 +309,22 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     } catch (Exception e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to disconnect the client with the handle " + clientHandle, e);
       c.addAction("Client failed to disconnect");
+    }
+  }
+
+  private void subscribe(String topic){
+    try {
+      int qos = 2;
+      String[] topics = new String[1];
+      topics[0] = topic;
+      Connections.getInstance(context).getConnection(clientHandle).getClient()
+              .subscribe(topic, qos, null, new ActionListener(context, ActionListener.Action.SUBSCRIBE, clientHandle, topics));
+    }
+    catch (MqttSecurityException e) {
+      Log.e(this.getClass().getCanonicalName(), "Failed to subscribe to" + topic + " the client with the handle " + clientHandle, e);
+    }
+    catch (MqttException e) {
+      Log.e(this.getClass().getCanonicalName(), "Failed to subscribe to" + topic + " the client with the handle " + clientHandle, e);
     }
   }
 
@@ -549,91 +591,30 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     };
   }
 
-
-
-  //Thread to publish location
-  public class DeviceIdThread extends Thread {
-    private boolean mAlive = true;
-    private boolean mPaused = false;
-
-    //Init thread
-    public DeviceIdThread() {
-    }
-
-    @Override
-    public void run() {
-      try {
-
-        while (mAlive) {
-          if (mPaused) {
-            yield();
-          }
-          else {
-            String android_id = Settings.Secure.getString(context.getContentResolver(),
-                    Settings.Secure.ANDROID_ID);
-            if(!TextUtils.isEmpty(android_id)) {
-              publish(android_id);
-            }
-            Thread.sleep(SLEEP_TIME);
-          }
-        }
-      }
-      catch (InterruptedException e) {
-        Log.e("Thread", "hilo interrumpido");
-      }
-    }
-
-    public void setPaused(boolean paused) {
-      mPaused = paused;
-    }
-
-    public void kill() {
-      mAlive = false;
-      mPaused = false;
+  private void publishDeviceId(){
+    String android_id = Settings.Secure.getString(context.getContentResolver(),
+            Settings.Secure.ANDROID_ID);
+    if(!TextUtils.isEmpty(android_id)) {
+      publish(android_id);
     }
   }
 
-  //Thread to publish location
-  public class ModelThread extends Thread {
-    private boolean mAlive = true;
-    private boolean mPaused = false;
-
-    //Init thread
-    public ModelThread() {
+  private void publishModelInfo(){
+    String manufacturer = Build.MANUFACTURER;
+    String model = Build.MODEL;
+    String message;
+    if (model.startsWith(manufacturer)) {
+      message = capitalize(model);
+    } else if (manufacturer.equalsIgnoreCase("HTC")) {
+      // make sure "HTC" is fully capitalized.
+      message = "HTC " + model;
+    } else {
+      message = capitalize(manufacturer) + " " + model;
     }
-
-    @Override
-    public void run() {
-      try {
-
-        while (mAlive) {
-          if (mPaused) {
-            yield();
-          }
-          else {
-            String manufacturer = Build.MANUFACTURER;
-            String model = Build.MODEL;
-            String message;
-            if (model.startsWith(manufacturer)) {
-              message = capitalize(model);
-            } else if (manufacturer.equalsIgnoreCase("HTC")) {
-              // make sure "HTC" is fully capitalized.
-              message = "HTC " + model;
-            } else {
-              message = capitalize(manufacturer) + " " + model;
-            }
-            if(TextUtils.isEmpty(message)) {
-              publish(message);
-            }
-            Thread.sleep(SLEEP_TIME);
-          }
-        }
-      }
-      catch (InterruptedException e) {
-        Log.e("Thread", "hilo interrumpido");
-      }
-
+    if(TextUtils.isEmpty(message)) {
+      publish(message);
     }
+  }
 
     private String capitalize(String str) {
       if (TextUtils.isEmpty(str)) {
@@ -655,16 +636,6 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       return phrase;
     }
 
-    public void setPaused(boolean paused) {
-      mPaused = paused;
-    }
-
-    public void kill() {
-      mAlive = false;
-      mPaused = false;
-    }
-  }
-
   //Thread to publish location
   public class InternetStationCellThread extends Thread {
     private boolean mAlive = true;
@@ -684,26 +655,26 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
           }
           else {
             ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
+            String message = "";
             //For 3G check
             if( manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
                     .isConnectedOrConnecting()) {
 
               Cursor cursor = context.getContentResolver().query(Uri.parse("content://telephony/carriers/preferapn"), null, null, null, null);
               do {
-                cursor.getString(0);
+                message = cursor.getString(0);
               } while (cursor.moveToNext());
+              cursor.close();
 
             } else if(manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
                     .isConnectedOrConnecting()) {
               WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
               WifiInfo info = wifiManager.getConnectionInfo();
-              info.getBSSID();
+              message = info.getBSSID();
             }
 
-            Address address = LocationService.getUserLocation(context);
-            if(address!=null) {
-              publish(address.getAddressLine(0));
+            if(!TextUtils.isEmpty(message)) {
+              publish(message);
             }
             Thread.sleep(SLEEP_TIME);
           }
