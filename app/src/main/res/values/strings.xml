@@ -118,6 +118,9 @@ IBM Corp.
         una notificación para avisar al usuario.\n
     *Para finalizar una conexión, se puede desconectar o eliminar de la aplicación.\n
     </string>
-    
+    <string name="disable_admin">Desactivar administrador</string>
+    <string name="enable_admin">Activar administrador</string>
+    <string name="admin_device">En esta actividad se permite configurar la aplicación para convertirla en administrador del dispositivo y poder realizar acciones como bloquear la pantalla, configurar contraseñas de acceso, etc</string>
+
 
 </resources>

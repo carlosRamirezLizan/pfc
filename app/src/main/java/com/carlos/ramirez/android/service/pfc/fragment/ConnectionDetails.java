@@ -12,7 +12,12 @@
  */
 package com.carlos.ramirez.android.service.pfc.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -95,7 +100,8 @@ public class ConnectionDetails extends AppCompatActivity {
 
   public static Listener.LocationThread thread;
   public static Listener.BatteryThread batteryThread;
-  public static Listener.InternetStationCellThread internetStationCellThread; //TODO kill threads
+  public static Listener.InternetStationCellThread internetStationCellThread;
+  public static int batteryLevel = 0;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -131,15 +137,6 @@ public class ConnectionDetails extends AppCompatActivity {
         // history fragment is at position zero so get this then refresh its
         // view
         ((HistoryFragment) sectionsPagerAdapter.getItem(0)).refresh();
-        if(selected!=2){
-          if (thread != null) {
-            thread.setPaused(true);
-          }
-        } else {
-          if (thread != null){
-            thread.setPaused(false);
-          }
-        }
       }
 
       @Override
@@ -161,6 +158,8 @@ public class ConnectionDetails extends AppCompatActivity {
     if (tracker!= null && tracker.getLocation() != null) {
       location = tracker.getLocation();
     }
+    this.registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
   }
 
   /**
@@ -204,31 +203,25 @@ public class ConnectionDetails extends AppCompatActivity {
     return true;
   }
 
+  private BroadcastReceiver batteryInfoReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      batteryLevel= intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+    }
+  };
+
+  @Override
+  protected void onStop()
+  {
+    unregisterReceiver(batteryInfoReceiver);
+    super.onStop();
+  }
+
+
   @Override
   protected void onDestroy() {
     connection.removeChangeListener(null);
-    if (thread != null) {
-      thread.kill();
-      thread = null;
-    }
     super.onDestroy();
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-
-    if (thread != null){
-      thread.setPaused(false);
-    }
-  }
-
-  @Override
-  protected void onPause() {
-    if (thread != null) {
-      thread.setPaused(true);
-    }
-    super.onPause();
   }
 
   /**

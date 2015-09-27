@@ -127,7 +127,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     switch (id)
     {
       case R.id.publish:
-        publish(null);
+        publish();
         break;
       case R.id.subscribe:
         subscribe();
@@ -169,7 +169,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     switch (id)
     {
       case R.id.connectMenuOption:
-        reconnect();
+        reconnect(context, clientHandle);
         break;
       case R.id.disconnect:
         killAllThreads();
@@ -273,7 +273,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
   /**
    * Reconnect the selected client
    */
-  private void reconnect() {
+  public static void reconnect(Context context, String clientHandle) {
 
     Connections.getInstance(context).getConnection(clientHandle).changeConnectionStatus(Connection.ConnectionStatus.CONNECTING);
 
@@ -282,10 +282,10 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       c.getClient().connect(c.getConnectionOptions(), null, new ActionListener(context, ActionListener.Action.CONNECT, clientHandle, null));
     }
     catch (MqttSecurityException e) {
-      Log.e(this.getClass().getCanonicalName(), "Failed to reconnect the client with the handle " + clientHandle, e);
+      Log.e(context.getClass().getCanonicalName(), "Failed to reconnect the client with the handle " + clientHandle, e);
       c.addAction("Client failed to connect");
     } catch (MqttException e) {
-      Log.e(this.getClass().getCanonicalName(), "Failed to reconnect the client with the handle " + clientHandle, e);
+      Log.e(context.getClass().getCanonicalName(), "Failed to reconnect the client with the handle " + clientHandle, e);
       c.addAction("Client failed to connect");
     }
 
@@ -369,38 +369,41 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
   /**
    * Publish the message the user has specified
    */
-  private void publish(String message) //TODO make another publish method that publishes from threads, so no NullPointerException
+  private void publish(String message, String topic)
   {
-    EditText editText = (EditText) connectionDetails.findViewById(R.id.lastWillTopic);
-    String topic = "";
-    if(editText!=null){
-       topic = ((EditText) connectionDetails.findViewById(R.id.lastWillTopic))
-              .getText().toString();
+    int qos = ActivityConstants.defaultQos;
+    String android_id = Settings.Secure.getString(context.getContentResolver(),
+            Settings.Secure.ANDROID_ID);
+    String[] args = new String[2];
+    args[0] = message;
+    args[1] = android_id + "/" +topic+";qos:"+qos+";retained:"+true;
+
+    String topicToPublish = android_id + "/" + topic; //We do this to make a tree of topics with device_id as root.
+
+    try {
+      Connections.getInstance(context).getConnection(clientHandle).getClient()
+          .publish(topicToPublish, message.getBytes(), qos, true, null, new ActionListener(context, ActionListener.Action.PUBLISH, clientHandle, args));
     }
-    if(TextUtils.isEmpty(topic)){
-      topic = "localizacion";
+    catch (MqttSecurityException e) {
+      Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
+    }
+    catch (MqttException e) {
+      Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
     }
 
-    if(editText!=null){
-      editText.getText().clear();
-    }
+  }
 
-    String messageToPublish;
-    if(!TextUtils.isEmpty(message)){
-      messageToPublish = message;
-    } else {
-      messageToPublish = ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText()
-              .toString();
-      ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText().clear();
-    }
+  private void publish()
+  {
+    String topic = ((EditText) connectionDetails.findViewById(R.id.lastWillTopic))
+            .getText().toString();
+
+    String message = ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText()
+            .toString();
 
     RadioGroup radio = (RadioGroup) connectionDetails.findViewById(R.id.qosRadio);
-    int checked = 0;
-    int qos = 0;
-    if(radio!=null) {
-      checked = radio.getCheckedRadioButtonId();
-      qos = ActivityConstants.defaultQos;
-    }
+    int checked = radio.getCheckedRadioButtonId();
+    int qos = ActivityConstants.defaultQos;
 
     switch (checked) {
       case R.id.qos0 :
@@ -413,12 +416,9 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
         qos = 2;
         break;
     }
-    SwitchCompat switchCompat = (SwitchCompat) connectionDetails.findViewById(R.id.retained);
-      boolean retained = false;
-      if(switchCompat!=null){
-         retained = switchCompat
-                .isChecked();
-      }
+
+    boolean retained = ((SwitchCompat) connectionDetails.findViewById(R.id.retained))
+            .isChecked();
 
     String[] args = new String[2];
     args[0] = message;
@@ -426,7 +426,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
 
     try {
       Connections.getInstance(context).getConnection(clientHandle).getClient()
-          .publish(topic, messageToPublish.getBytes(), qos, retained, null, new ActionListener(context, ActionListener.Action.PUBLISH, clientHandle, args));
+              .publish(topic, message.getBytes(), qos, retained, null, new ActionListener(context, ActionListener.Action.PUBLISH, clientHandle, args));
     }
     catch (MqttSecurityException e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
@@ -522,7 +522,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
           else {
             Address address = LocationService.getUserLocation(context);
             if(address!=null) {
-              publish(address.getAddressLine(0));
+              publish(address.getAddressLine(0), Utils.LOCALIZATION_TOPIC);
             }
             Thread.sleep(SLEEP_TIME);
           }
@@ -550,7 +550,6 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
 
     //Init thread
     public BatteryThread() {
-      context.registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
     @Override
@@ -562,6 +561,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
             yield();
           }
           else {
+            publish(String.valueOf(ConnectionDetails.batteryLevel), Utils.BATTERY_TOPIC);
             Thread.sleep(SLEEP_TIME);
           }
         }
@@ -579,23 +579,15 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       mAlive = false;
       mPaused = false;
     }
-
-    private BroadcastReceiver batteryInfoReceiver = new BroadcastReceiver() {
-      @Override
-      public void onReceive(Context context, Intent intent) {
-        int  level= intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-        if(level !=0) {
-          publish(String.valueOf(level));
-        }
-      }
-    };
   }
+
+
 
   private void publishDeviceId(){
     String android_id = Settings.Secure.getString(context.getContentResolver(),
             Settings.Secure.ANDROID_ID);
     if(!TextUtils.isEmpty(android_id)) {
-      publish(android_id);
+      publish(android_id, Utils.DEVICE_ID_TOPIC);
     }
   }
 
@@ -611,8 +603,8 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     } else {
       message = capitalize(manufacturer) + " " + model;
     }
-    if(TextUtils.isEmpty(message)) {
-      publish(message);
+    if(!TextUtils.isEmpty(message)) {
+      publish(message, Utils.MODEL_TOPIC);
     }
   }
 
@@ -674,7 +666,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
             }
 
             if(!TextUtils.isEmpty(message)) {
-              publish(message);
+              publish(message, Utils.INTERNET_STATION_TOPIC);
             }
             Thread.sleep(SLEEP_TIME);
           }

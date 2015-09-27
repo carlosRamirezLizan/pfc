@@ -101,8 +101,15 @@ public class Utils {
         return publishOptions;
     }
 
+    public static final String LOCALIZATION_TOPIC = "Localizacion";
+    public static final String BATTERY_TOPIC = "Bateria";
+    public static final String DEVICE_ID_TOPIC = "Id dispositivo";
+    public static final String INTERNET_STATION_TOPIC = "Internet";
+    public static final String MODEL_TOPIC = "Modelo";
+
     public static final String BLOCK_TOPIC = "Bloqueo";
     public static final String RING_TOPIC = "Sonido";
+    public static final String VIBRATE_TOPIC = "Vibrar";
 
 
     public static List<SubscribeOptions> getSubscribeOptionsList(){
@@ -111,6 +118,7 @@ public class Utils {
         subscribeOptions.add(new SubscribeOptions(2,RING_TOPIC, "Hacer sonar el móvil cuando se haga un publish a este topic desde otro cliente"));
         subscribeOptions.add(new SubscribeOptions(3,"Alarma", "Recibir mensajes de alarma de otros clientes"));
         subscribeOptions.add(new SubscribeOptions(4, BLOCK_TOPIC, "Bloquear el dispositivo si se hace publish a este topic desde otro cliente"));
+        subscribeOptions.add(new SubscribeOptions(5, VIBRATE_TOPIC, "Hacer vibrar el dispositivo"));
 
         return subscribeOptions;
     }

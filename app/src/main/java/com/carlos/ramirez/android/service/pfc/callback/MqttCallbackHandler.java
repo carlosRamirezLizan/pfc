@@ -17,6 +17,7 @@ import android.content.Intent;
 
 import com.carlos.ramirez.android.service.pfc.R;
 import com.carlos.ramirez.android.service.pfc.fragment.ConnectionDetails;
+import com.carlos.ramirez.android.service.pfc.listener.Listener;
 import com.carlos.ramirez.android.service.pfc.model.Connection;
 import com.carlos.ramirez.android.service.pfc.model.Connections;
 import com.carlos.ramirez.android.service.pfc.util.Notify;
@@ -74,7 +75,7 @@ public class MqttCallbackHandler implements MqttCallback {
 
       //notify the user
       Notify.notifcation(context, message, intent, R.string.notifyTitle_connectionLost);
-      //TODO volver a conectar
+      Listener.reconnect(context, clientHandle); //reconnect if connection lost
     }
   }
 
@@ -98,16 +99,18 @@ public class MqttCallbackHandler implements MqttCallback {
     intent.putExtra("handle", clientHandle);
 
     //notify the user 
-    Notify.notifcation(context, context.getString(R.string.notification, c.getId(), new String(message.getPayload()), topic), intent, R.string.notifyTitle);
     if(topic.equals(Utils.BLOCK_TOPIC)){
       Notify.performBlockDeviceAction(context);
-    }else if(topic.equals(Utils.RING_TOPIC)){
+    }else if(topic.equals(Utils.RING_TOPIC)) {
       Notify.performRingDeviceAction(context);
+    } else if(topic.equals(Utils.VIBRATE_TOPIC)){
+      Notify.performVibrationDeviceAction(context);
+    } else {
+      Notify.notifcation(context, context.getString(R.string.notification, c.getId(), new String(message.getPayload()), topic), intent, R.string.notifyTitle);
     }
     //update client history
     c.addAction(messageString);
     //TODO llega dos veces messageArrived
-    //TODO si el topic es de sonido o bloqueo que el movil se bloquee
 
   }
 

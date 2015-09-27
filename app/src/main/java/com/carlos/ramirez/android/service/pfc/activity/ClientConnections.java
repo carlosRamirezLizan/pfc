@@ -250,6 +250,9 @@ public class ClientConnections extends AppCompatActivity {
       case R.id.about:
         startActivity(new Intent(ClientConnections.this, About.class));
         break;
+      case R.id.lock_screen:
+        startActivityForResult(new Intent(ClientConnections.this, LockScreenActivity.class), LockScreenActivity.RESULT_ENABLE);
+        break;
     }
     return super.onOptionsItemSelected(item);
   }

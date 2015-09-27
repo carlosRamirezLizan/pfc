@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -77,6 +78,16 @@
         </activity>
 
         <activity
+            android:name=".activity.LockScreenActivity"
+            android:label="@string/title_activity_connection_details"
+            android:parentActivityName=".activity.ClientConnections"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.ClientConnections" />
+        </activity>
+
+        <activity
             android:name="com.carlos.ramirez.android.service.pfc.activity.About"
             android:label="@string/about_tittle"
             android:parentActivityName=".activity.ClientConnections"
@@ -85,6 +96,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.ClientConnections" />
         </activity>
+
+        <receiver android:name=".activity.MyAdmin"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin"
+                android:resource="@xml/policies" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
