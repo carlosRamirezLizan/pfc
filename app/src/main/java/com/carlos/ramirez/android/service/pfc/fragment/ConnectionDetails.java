@@ -159,7 +159,6 @@ public class ConnectionDetails extends AppCompatActivity {
       location = tracker.getLocation();
     }
     this.registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
   }
 
   /**
@@ -213,7 +212,11 @@ public class ConnectionDetails extends AppCompatActivity {
   @Override
   protected void onStop()
   {
-    unregisterReceiver(batteryInfoReceiver);
+    try {
+      unregisterReceiver(batteryInfoReceiver);
+    } catch (Exception e){
+      e.printStackTrace();
+    }
     super.onStop();
   }
 
