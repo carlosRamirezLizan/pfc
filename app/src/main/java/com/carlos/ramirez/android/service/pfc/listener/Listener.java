@@ -384,10 +384,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       Connections.getInstance(context).getConnection(clientHandle).getClient()
           .publish(topicToPublish, message.getBytes(), qos, true, null, new ActionListener(context, ActionListener.Action.PUBLISH, clientHandle, args));
     }
-    catch (MqttSecurityException e) {
-      Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
-    }
-    catch (MqttException e) {
+    catch (Exception e) {
       Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
     }
 
