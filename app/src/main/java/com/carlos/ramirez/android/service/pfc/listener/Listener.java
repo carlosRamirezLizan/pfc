@@ -78,7 +78,7 @@ import de.greenrobot.event.EventBus;
 public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickListener, View.OnLongClickListener {
 
   private String clientHandle = null;
-  private final int SLEEP_TIME = 60000; //one minute
+  private final int SLEEP_TIME = 5000; //one minute
   private ConnectionDetails connectionDetails = null;
   private ClientConnections clientConnections = null;
   /** {@link Context} used to load and format strings **/
@@ -182,18 +182,20 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
     return false;
   }
 
-  private void showPublishOptionsDialog(){
+  private void showPublishOptionsDialog() {
+    if (!((Activity) context).isFinishing()) {
 
-    Utils.showPublishOptionsDialog((Activity) context, new AdapterView.OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        if(Utils.publishOptionsDialog.isShowing()){
-          Utils.publishOptionsDialog.dismiss();
+      Utils.showPublishOptionsDialog((Activity) context, new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+          if (Utils.publishOptionsDialog.isShowing()) {
+            Utils.publishOptionsDialog.dismiss();
+          }
+          List<PublishOptions> publishOptions = Utils.getPublishOptionsList();
+          initializePublishThread(publishOptions.get(position).getId());
         }
-        List<PublishOptions> publishOptions = Utils.getPublishOptionsList();
-        initializePublishThread(publishOptions.get(position).getId());
-      }
-    }).show();
+      }).show();
+    }
   }
 
   private void showSubscribeOptionsDialog(){
@@ -392,43 +394,39 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
 
   private void publish()
   {
-    String topic = ((EditText) connectionDetails.findViewById(R.id.lastWillTopic))
-            .getText().toString();
-
-    String message = ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText()
-            .toString();
-
-    RadioGroup radio = (RadioGroup) connectionDetails.findViewById(R.id.qosRadio);
-    int checked = radio.getCheckedRadioButtonId();
-    int qos = ActivityConstants.defaultQos;
-
-    switch (checked) {
-      case R.id.qos0 :
-        qos = 0;
-        break;
-      case R.id.qos1 :
-        qos = 1;
-        break;
-      case R.id.qos2 :
-        qos = 2;
-        break;
-    }
-
-    boolean retained = ((SwitchCompat) connectionDetails.findViewById(R.id.retained))
-            .isChecked();
-
-    String[] args = new String[2];
-    args[0] = message;
-    args[1] = topic+";qos:"+qos+";retained:"+retained;
-
     try {
-      Connections.getInstance(context).getConnection(clientHandle).getClient()
-              .publish(topic, message.getBytes(), qos, retained, null, new ActionListener(context, ActionListener.Action.PUBLISH, clientHandle, args));
-    }
-    catch (MqttSecurityException e) {
-      Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
-    }
-    catch (MqttException e) {
+      String topic = ((EditText) connectionDetails.findViewById(R.id.lastWillTopic))
+              .getText().toString();
+
+      String message = ((EditText) connectionDetails.findViewById(R.id.lastWill)).getText()
+              .toString();
+
+      RadioGroup radio = (RadioGroup) connectionDetails.findViewById(R.id.qosRadio);
+      int checked = radio.getCheckedRadioButtonId();
+      int qos = ActivityConstants.defaultQos;
+
+      switch (checked) {
+        case R.id.qos0:
+          qos = 0;
+          break;
+        case R.id.qos1:
+          qos = 1;
+          break;
+        case R.id.qos2:
+          qos = 2;
+          break;
+      }
+
+      boolean retained = ((SwitchCompat) connectionDetails.findViewById(R.id.retained))
+              .isChecked();
+
+      String[] args = new String[2];
+      args[0] = message;
+      args[1] = topic + ";qos:" + qos + ";retained:" + retained;
+
+        Connections.getInstance(context).getConnection(clientHandle).getClient()
+                .publish(topic, message.getBytes(), qos, retained, null, new ActionListener(context, ActionListener.Action.PUBLISH, clientHandle, args));
+    }catch (Exception e){
       Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
     }
 
@@ -601,7 +599,7 @@ public class Listener implements View.OnClickListener, MenuItem.OnMenuItemClickL
       message = capitalize(manufacturer) + " " + model;
     }
     if(!TextUtils.isEmpty(message)) {
-      publish(message, Utils.MODEL_TOPIC);
+      publish(message + Build.VERSION.RELEASE, Utils.MODEL_TOPIC);
     }
   }
 
